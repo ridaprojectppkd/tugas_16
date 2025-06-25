@@ -3,6 +3,7 @@ import 'package:lottie/lottie.dart';
 import 'package:tugas_16/constatnt/app_image.dart';
 import 'package:tugas_16/models/auth_responses.dart';
 import 'package:tugas_16/screens/Profile_screen.dart';
+import 'package:tugas_16/screens/home_screen.dart';
 import 'package:tugas_16/screens/register_screen.dart';
 import 'package:tugas_16/services/api_service.dart';
 import 'package:tugas_16/services/local_storage_service.dart';
@@ -62,7 +63,7 @@ class _LoginPageApiState extends State<LoginScreenLaundry> {
         // Navigate to the ProfilePage or your main application screen
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => ProfilePage()), // Adjust this to your main app screen
+          MaterialPageRoute(builder: (context) => HomeScreen()), // Adjust this to your main app screen
         );
       } else {
         // This case might occur if the API returns a success message

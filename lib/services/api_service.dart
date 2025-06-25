@@ -7,11 +7,10 @@ import 'package:tugas_16/models/order_list_response.dart';
 import 'package:tugas_16/models/order_responses.dart';
 import 'package:tugas_16/models/service_type_list_responses.dart';
 import 'package:tugas_16/models/single_service_type_responses.dart';
-
-// For single service type response
+import 'package:tugas_16/models/single_user_responses.dart';
 
 class ApiService {
-  final String baseUrl = 'https://applaundry.mobileprojp.com';
+  final String baseUrl = 'https://applaundry.mobileprojp.com/api';
   String? _authToken; // Store the authentication token
 
   void setAuthToken(String? token) {
@@ -33,21 +32,23 @@ class ApiService {
 
   // --- Authentication Endpoints ---
 
-  Future<AuthResponse> register(String name, String email, String password) async {
+  Future<AuthResponse> register(
+    String name,
+    String email,
+    String password,
+  ) async {
     final response = await http.post(
       Uri.parse('$baseUrl/register'),
       headers: _getHeaders(includeAuth: false),
-      body: jsonEncode({
-        'name': name,
-        'email': email,
-        'password': password,
-      }),
+      body: jsonEncode({'name': name, 'email': email, 'password': password}),
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       return AuthResponse.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception(ErrorResponse.fromJson(jsonDecode(response.body)).message);
+      throw Exception(
+        ErrorResponse.fromJson(jsonDecode(response.body)).message,
+      );
     }
   }
 
@@ -55,20 +56,21 @@ class ApiService {
     final response = await http.post(
       Uri.parse('$baseUrl/login'),
       headers: _getHeaders(includeAuth: false),
-      body: jsonEncode({
-        'email': email,
-        'password': password,
-      }),
+      body: jsonEncode({'email': email, 'password': password}),
     );
 
     if (response.statusCode == 200) {
       final authResponse = AuthResponse.fromJson(jsonDecode(response.body));
       if (authResponse.data?.token != null) {
-        setAuthToken(authResponse.data!.token); // Store token on successful login
+        setAuthToken(
+          authResponse.data!.token,
+        ); // Store token on successful login
       }
       return authResponse;
     } else {
-      throw Exception(ErrorResponse.fromJson(jsonDecode(response.body)).message);
+      throw Exception(
+        ErrorResponse.fromJson(jsonDecode(response.body)).message,
+      );
     }
   }
 
@@ -82,62 +84,90 @@ class ApiService {
       setAuthToken(null); // Clear token on logout
       return AuthResponse.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception(ErrorResponse.fromJson(jsonDecode(response.body)).message);
+      throw Exception(
+        ErrorResponse.fromJson(jsonDecode(response.body)).message,
+      );
     }
   }
 
   // --- User Profile Endpoints ---
-  // Fetches the current user's profile data
-  Future<AuthResponse> getProfile() async {
+  Future<SingleUserResponse> getProfile() async {
     final response = await http.get(
       Uri.parse('$baseUrl/me'),
       headers: _getHeaders(),
     );
 
     if (response.statusCode == 200) {
-      return AuthResponse.fromJson(jsonDecode(response.body));
+      return SingleUserResponse.fromJson(jsonDecode(response.body));
     } else {
-      // If unauthorized (401), it means the token is invalid or missing
       if (response.statusCode == 401) {
         throw Exception("Unauthenticated. Please log in again.");
       }
-      throw Exception(ErrorResponse.fromJson(jsonDecode(response.body)).message);
+      throw Exception(
+        ErrorResponse.fromJson(jsonDecode(response.body)).message,
+      );
     }
   }
 
+  Future<SingleUserResponse> updateProfile(String name) async {
+    final response = await http.put(
+      Uri.parse('$baseUrl/profile'), // According to Postman: PUT /profile
+      headers: _getHeaders(),
+      body: jsonEncode({'name': name}),
+    );
+
+    if (response.statusCode == 200) {
+      return SingleUserResponse.fromJson(jsonDecode(response.body));
+    } else {
+      if (response.statusCode == 401) {
+        throw Exception("Unauthenticated. Please log in again.");
+      }
+      throw Exception(
+        ErrorResponse.fromJson(jsonDecode(response.body)).message,
+      );
+    }
+  }
 
   // --- Service Type Endpoints ---
 
   Future<ServiceTypeListResponse> getServiceTypes() async {
     final response = await http.get(
-      Uri.parse('$baseUrl/service_types'),
+      Uri.parse('$baseUrl/layanan'),
       headers: _getHeaders(),
     );
 
     if (response.statusCode == 200) {
       return ServiceTypeListResponse.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception(ErrorResponse.fromJson(jsonDecode(response.body)).message);
+      throw Exception(
+        ErrorResponse.fromJson(jsonDecode(response.body)).message,
+      );
     }
   }
 
   Future<SingleServiceTypeResponse> addServiceType(String name) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/service_types'),
+      Uri.parse('$baseUrl/layanan'),
       headers: _getHeaders(),
       body: jsonEncode({'name': name}),
     );
 
-    if (response.statusCode == 201) {
+    // FIX: Accept both 200 OK and 201 Created as success status codes
+    if (response.statusCode == 201 || response.statusCode == 200) {
       return SingleServiceTypeResponse.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception(ErrorResponse.fromJson(jsonDecode(response.body)).message);
+      throw Exception(
+        ErrorResponse.fromJson(jsonDecode(response.body)).message,
+      );
     }
   }
 
-  Future<SingleServiceTypeResponse> updateServiceType(int id, String name) async {
+  Future<SingleServiceTypeResponse> updateServiceType(
+    int id,
+    String name,
+  ) async {
     final response = await http.put(
-      Uri.parse('$baseUrl/service_types/$id'),
+      Uri.parse('$baseUrl/layanan/$id'),
       headers: _getHeaders(),
       body: jsonEncode({'name': name}),
     );
@@ -145,20 +175,24 @@ class ApiService {
     if (response.statusCode == 200) {
       return SingleServiceTypeResponse.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception(ErrorResponse.fromJson(jsonDecode(response.body)).message);
+      throw Exception(
+        ErrorResponse.fromJson(jsonDecode(response.body)).message,
+      );
     }
   }
 
   Future<SingleServiceTypeResponse> deleteServiceType(int id) async {
     final response = await http.delete(
-      Uri.parse('$baseUrl/service_types/$id'),
+      Uri.parse('$baseUrl/layanan/$id'),
       headers: _getHeaders(),
     );
 
     if (response.statusCode == 200) {
       return SingleServiceTypeResponse.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception(ErrorResponse.fromJson(jsonDecode(response.body)).message);
+      throw Exception(
+        ErrorResponse.fromJson(jsonDecode(response.body)).message,
+      );
     }
   }
 
@@ -173,7 +207,9 @@ class ApiService {
     if (response.statusCode == 200) {
       return OrderListResponse.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception(ErrorResponse.fromJson(jsonDecode(response.body)).message);
+      throw Exception(
+        ErrorResponse.fromJson(jsonDecode(response.body)).message,
+      );
     }
   }
 
@@ -186,11 +222,17 @@ class ApiService {
     if (response.statusCode == 200) {
       return SingleOrderResponse.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception(ErrorResponse.fromJson(jsonDecode(response.body)).message);
+      throw Exception(
+        ErrorResponse.fromJson(jsonDecode(response.body)).message,
+      );
     }
   }
 
-  Future<SingleOrderResponse> createOrder(int customerId, String layanan, int serviceTypeId) async {
+  Future<SingleOrderResponse> createOrder(
+    int customerId,
+    String layanan,
+    int serviceTypeId,
+  ) async {
     final response = await http.post(
       Uri.parse('$baseUrl/orders'),
       headers: _getHeaders(),
@@ -201,10 +243,13 @@ class ApiService {
       }),
     );
 
-    if (response.statusCode == 201) {
+    // CHANGED: Accept 200 OK as a success status for creating an order
+    if (response.statusCode == 201 || response.statusCode == 200) {
       return SingleOrderResponse.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception(ErrorResponse.fromJson(jsonDecode(response.body)).message);
+      throw Exception(
+        ErrorResponse.fromJson(jsonDecode(response.body)).message,
+      );
     }
   }
 
@@ -218,7 +263,9 @@ class ApiService {
     if (response.statusCode == 200) {
       return SingleOrderResponse.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception(ErrorResponse.fromJson(jsonDecode(response.body)).message);
+      throw Exception(
+        ErrorResponse.fromJson(jsonDecode(response.body)).message,
+      );
     }
   }
 }
