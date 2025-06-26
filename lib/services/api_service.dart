@@ -252,4 +252,20 @@ class ApiService {
       );
     }
   }
+
+  ////////////Delete Order///////////////////////
+  Future<SingleOrderResponse> deleteOrder(int id) async {
+    final response = await http.delete(
+      Uri.parse('$baseUrl/orders/$id'),
+      headers: _getHeaders(),
+    );
+
+    if (response.statusCode == 200) {
+      return SingleOrderResponse.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception(
+        ErrorResponse.fromJson(jsonDecode(response.body)).message,
+      );
+    }
+  }
 }

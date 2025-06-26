@@ -111,6 +111,16 @@ class _ProfilePageState extends State<ProfilePage> {
             backgroundColor: Colors.green,
           ),
         );
+
+        //////////tambahan navigator/////////////////
+        if (!mounted) return;
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginScreenLaundry()), // Navigate to LoginScreen
+        (Route<dynamic> route) => false, // Remove all previous routes
+      );
+
+      ////////////////////////////
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
