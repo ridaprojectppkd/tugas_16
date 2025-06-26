@@ -74,22 +74,6 @@ class ApiService {
     }
   }
 
-  Future<AuthResponse> logout() async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/logout'),
-      headers: _getHeaders(),
-    );
-
-    if (response.statusCode == 200) {
-      setAuthToken(null); // Clear token on logout
-      return AuthResponse.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception(
-        ErrorResponse.fromJson(jsonDecode(response.body)).message,
-      );
-    }
-  }
-
   // --- User Profile Endpoints ---
   Future<SingleUserResponse> getProfile() async {
     final response = await http.get(

@@ -2,14 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:tugas_16/constatnt/app_image.dart';
 import 'package:tugas_16/models/auth_responses.dart';
-import 'package:tugas_16/screens/Profile_screen.dart';
 import 'package:tugas_16/screens/home_screen.dart';
 import 'package:tugas_16/screens/register_screen.dart';
 import 'package:tugas_16/services/api_service.dart';
 import 'package:tugas_16/services/local_storage_service.dart';
 // Import your custom AppImage for local assets (ensure path is correct)
-
-
 
 class LoginScreenLaundry extends StatefulWidget {
   const LoginScreenLaundry({super.key});
@@ -63,7 +60,9 @@ class _LoginPageApiState extends State<LoginScreenLaundry> {
         // Navigate to the ProfilePage or your main application screen
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => HomeScreen()), // Adjust this to your main app screen
+          MaterialPageRoute(
+            builder: (context) => HomeScreen(),
+          ), // Adjust this to your main app screen
         );
       } else {
         // This case might occur if the API returns a success message
@@ -79,7 +78,10 @@ class _LoginPageApiState extends State<LoginScreenLaundry> {
       // Handle API errors (e.g., password incorrect, email not registered)
       String errorMessage = 'An unknown error occurred.';
       if (e is Exception) {
-        errorMessage = e.toString().replaceFirst('Exception: ', ''); // Clean up exception message
+        errorMessage = e.toString().replaceFirst(
+          'Exception: ',
+          '',
+        ); // Clean up exception message
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -100,14 +102,10 @@ class _LoginPageApiState extends State<LoginScreenLaundry> {
         children: [
           // Background with washing bubbles theme
           Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color.fromARGB(255, 255, 255, 255), // Light blue
-                  Color.fromARGB(255, 0, 95, 204), // Medium blue
-                ],
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(AppImage.bgkuningbiru),
+                fit: BoxFit.cover,
               ),
             ),
             child: Opacity(
@@ -172,7 +170,7 @@ class _LoginPageApiState extends State<LoginScreenLaundry> {
                   Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: const Color.fromARGB(144, 255, 255, 255),
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
@@ -279,7 +277,8 @@ class _LoginPageApiState extends State<LoginScreenLaundry> {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter your password';
                               }
-                              if (value.length < 6) { // Minimum length as per your API example's password requirements (though API expects 8+ with special chars)
+                              if (value.length < 6) {
+                                // Minimum length as per your API example's password requirements (though API expects 8+ with special chars)
                                 return 'Password must be at least 6 characters';
                               }
                               return null;
@@ -375,7 +374,9 @@ class _LoginPageApiState extends State<LoginScreenLaundry> {
                                 // Handle Google sign in
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                    content: Text("Google login not implemented yet!"),
+                                    content: Text(
+                                      "Google login not implemented yet!",
+                                    ),
                                   ),
                                 );
                               },
@@ -425,7 +426,8 @@ class _LoginPageApiState extends State<LoginScreenLaundry> {
                             context,
                             MaterialPageRoute(
                               builder:
-                                  (context) => const RegisterScreenLaundry(), // Ensure this path is correct
+                                  (context) =>
+                                      const RegisterScreenLaundry(), // Ensure this path is correct
                             ),
                           );
                         },

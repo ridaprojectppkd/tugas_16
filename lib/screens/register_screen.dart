@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 // Import your custom AppImage for local assets (ensure path is correct)
 
-
 // Import your generated services and models
-
 
 // Ensure this path is correct for your project structure
 // Assuming LoginScreenLaundry is where users go after registration
@@ -12,7 +10,6 @@ import 'package:tugas_16/constatnt/app_image.dart';
 import 'package:tugas_16/models/auth_responses.dart';
 import 'package:tugas_16/screens/login_screen.dart';
 import 'package:tugas_16/services/api_service.dart';
-
 
 class RegisterScreenLaundry extends StatefulWidget {
   static const String id = "/register_screen_api";
@@ -103,13 +100,9 @@ class _RegisterPageApiState extends State<RegisterScreenLaundry> {
           // Background with laundry-themed image
           Container(
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color.fromARGB(255, 255, 255, 255), // Light blue
-                  Color.fromARGB(255, 0, 95, 204), // Medium blue
-                ],
+              image: DecorationImage(
+                image: AssetImage(AppImage.bgkuningbiru),
+                fit: BoxFit.cover,
               ),
             ),
           ),
@@ -146,7 +139,12 @@ class _RegisterPageApiState extends State<RegisterScreenLaundry> {
                   Container(
                     padding: EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.9),
+                      color: const Color.fromARGB(
+                        0,
+                        255,
+                        255,
+                        255,
+                      ).withOpacity(0.9),
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
@@ -170,7 +168,12 @@ class _RegisterPageApiState extends State<RegisterScreenLaundry> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               filled: true,
-                              fillColor: Colors.grey[50],
+                              fillColor: const Color.fromARGB(
+                                255,
+                                255,
+                                255,
+                                255,
+                              ),
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -243,7 +246,9 @@ class _RegisterPageApiState extends State<RegisterScreenLaundry> {
                               if (!value.contains(RegExp(r'[a-z]'))) {
                                 return 'Password must contain a lowercase letter.';
                               }
-                              if (!value.contains(RegExp(r'[0-9!@#$%^&*(),.?":{}|<>]'))) {
+                              if (!value.contains(
+                                RegExp(r'[0-9!@#$%^&*(),.?":{}|<>]'),
+                              )) {
                                 return 'Password must contain a number or symbol.';
                               }
                               return null;
@@ -300,18 +305,19 @@ class _RegisterPageApiState extends State<RegisterScreenLaundry> {
                                 ),
                                 elevation: 3,
                               ),
-                              child: _isLoading
-                                  ? CircularProgressIndicator(
-                                      color: Colors.white,
-                                    )
-                                  : Text(
-                                      'CREATE ACCOUNT',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
+                              child:
+                                  _isLoading
+                                      ? CircularProgressIndicator(
                                         color: Colors.white,
+                                      )
+                                      : Text(
+                                        'CREATE ACCOUNT',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
                                       ),
-                                    ),
                             ),
                           ),
                           SizedBox(height: 16),
@@ -321,7 +327,9 @@ class _RegisterPageApiState extends State<RegisterScreenLaundry> {
                             children: [
                               Text(
                                 'Already have an account?',
-                                style: TextStyle(color: Colors.black54), // Adjust color for visibility on white card
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                ), // Adjust color for visibility on white card
                               ),
                               TextButton(
                                 onPressed: () {
@@ -329,7 +337,9 @@ class _RegisterPageApiState extends State<RegisterScreenLaundry> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => LoginScreenLaundry(), // Ensure this path is correct
+                                      builder:
+                                          (context) =>
+                                              LoginScreenLaundry(), // Ensure this path is correct
                                     ),
                                   );
                                 },

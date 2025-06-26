@@ -142,7 +142,7 @@ class _ProfilePageState extends State<ProfilePage> {
       _isLoading = true;
     });
     try {
-      await _apiService.logout();
+      
       await _localStorageService.clearAuthToken();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -216,7 +216,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   decoration: const BoxDecoration(
-                    color: Color(0xFF0D47A1), // Dark blue
+                    color: Color.fromARGB(255, 117, 172, 255), // Dark blue
                   ),
                 )
                 : UserAccountsDrawerHeader(
@@ -230,7 +230,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           : '',
                       style: const TextStyle(
                         fontSize: 40.0,
-                        color: Color(0xFF0D47A1),
+                        color: Color.fromARGB(255, 0, 0, 0),
                       ),
                     ),
                   ),

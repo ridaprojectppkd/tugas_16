@@ -118,7 +118,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
       _isLoadingOrders = true;
     });
     try {
-      await _apiService.logout();
+    
       await _localStorageService.clearAuthToken();
       if (!mounted) return;
       scaffoldMessenger.showSnackBar(

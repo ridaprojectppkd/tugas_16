@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tugas_16/lottie.dart';
 
 // Import your login and registration screens
 // Ensure these paths are correct for your project structure
@@ -58,7 +57,8 @@ class MyApp extends StatelessWidget {
         RegisterScreenLaundry.id: (context) => const RegisterScreenLaundry(),
         HomeScreen.id: (context) => const HomeScreen(),
         '/profile': (context) => const ProfilePage(),
-          CreateOrderScreen.id: (context) => const CreateOrderScreen(), // ADD THIS LINE
+        CreateOrderScreen.id:
+            (context) => const CreateOrderScreen(), // ADD THIS LINE
       },
     );
   }

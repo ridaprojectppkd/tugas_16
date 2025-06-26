@@ -362,7 +362,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _isLoadingServices = true;
     });
     try {
-      await _apiService.logout();
+      // await _apiService.logout();
       await _localStorageService.clearAuthToken();
       if (!mounted) return;
       scaffoldMessenger.showSnackBar(
@@ -374,7 +374,9 @@ class _HomeScreenState extends State<HomeScreen> {
       if (!mounted) return;
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const LoginScreenLaundry()), // Corrected to LoginScreen
+        MaterialPageRoute(
+          builder: (context) => const LoginScreenLaundry(),
+        ), // Corrected to LoginScreen
         (Route<dynamic> route) => false,
       );
     } catch (e) {
@@ -409,11 +411,23 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.zero,
           children: <Widget>[
             _userProfile == null
-                ? UserAccountsDrawerHeader(
+                ? Container(
+                  height: 200,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage("assets/images/download.jpg"),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: UserAccountsDrawerHeader(
                     accountName:
                         _isLoadingProfile
-                            ? const CircularProgressIndicator(color: Colors.white)
-                            : Text(_profileErrorMessage ?? 'Loading Profile...'),
+                            ? const CircularProgressIndicator(
+                              color: Color.fromARGB(255, 255, 255, 255),
+                            )
+                            : Text(
+                              _profileErrorMessage ?? 'Loading Profile...',
+                            ),
                     accountEmail: const Text(''),
                     currentAccountPicture: const CircleAvatar(
                       backgroundColor: Colors.white,
@@ -423,9 +437,18 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: Color(0xFF0D47A1),
                       ),
                     ),
-                    decoration: const BoxDecoration(color: Color(0xFF0D47A1)),
-                  )
-                : UserAccountsDrawerHeader(
+                    decoration: const BoxDecoration(color: Colors.transparent),
+                  ),
+                )
+                : Container(
+                  height: 200,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage("assets/images/download.jpg"),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: UserAccountsDrawerHeader(
                     accountName: Text(_userProfile!.name),
                     accountEmail: Text(_userProfile!.email),
                     currentAccountPicture: CircleAvatar(
@@ -440,18 +463,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ),
-                    decoration: const BoxDecoration(color: Color(0xFF0D47A1)),
+                    decoration: const BoxDecoration(color: Colors.transparent),
                   ),
+                ),
             ListTile(
               leading: const Icon(Icons.person),
               title: const Text('My Profile'),
               onTap: () {
                 if (mounted) {
-                  Navigator.pop(context); // Close the drawer
+                  Navigator.pop(context);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const ProfilePage(), // Changed to ProfileScreen
+                      builder: (context) => const ProfilePage(),
                     ),
                   );
                 }
@@ -462,17 +486,17 @@ class _HomeScreenState extends State<HomeScreen> {
               title: const Text('Services'),
               onTap: () {
                 if (mounted) {
-                  Navigator.pop(context); // Close the drawer
-                  _fetchServiceTypes(); // Refresh services
+                  Navigator.pop(context);
+                  _fetchServiceTypes();
                 }
               },
             ),
             ListTile(
-              leading: const Icon(Icons.receipt_long), // Icon for orders
+              leading: const Icon(Icons.receipt_long),
               title: const Text('My Orders'),
               onTap: () {
                 if (mounted) {
-                  Navigator.pop(context); // Close the drawer
+                  Navigator.pop(context);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -493,273 +517,284 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body:
           _isLoadingProfile || _isLoadingServices
-                ? const Center(child: CircularProgressIndicator())
-                : SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // User Profile Section (similar to the image)
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(24.0),
-                          decoration: const BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                Color.fromARGB(255, 0, 95, 204),
-                                Color(0xFF0D47A1),
-                              ],
-                            ),
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(30),
-                              bottomRight: Radius.circular(30),
-                            ),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+              ? const Center(child: CircularProgressIndicator())
+              : SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // User Profile Section (similar to the image)
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(24.0),
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Color.fromARGB(255, 15, 255, 255),
+                            Color.fromARGB(255, 198, 255, 145),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(30),
+                          bottomRight: Radius.circular(30),
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
                             children: [
-                              Row(
+                              CircleAvatar(
+                                radius: 30,
+                                backgroundColor: Colors.white,
+                                child:
+                                    _userProfile != null &&
+                                            _userProfile!.name.isNotEmpty
+                                        ? Text(
+                                          _userProfile!.name
+                                              .substring(0, 1)
+                                              .toUpperCase(),
+                                          style: const TextStyle(
+                                            fontSize: 30,
+                                            color: Color(0xFF0D47A1),
+                                          ),
+                                        )
+                                        : const Icon(
+                                          Icons.person,
+                                          size: 30,
+                                          color: Color(0xFF0D47A1),
+                                        ),
+                              ),
+                              const SizedBox(width: 16),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  CircleAvatar(
-                                    radius: 30,
-                                    backgroundColor: Colors.white,
-                                    child:
-                                        _userProfile != null &&
-                                                _userProfile!.name.isNotEmpty
-                                            ? Text(
-                                                _userProfile!.name
-                                                    .substring(0, 1)
-                                                    .toUpperCase(),
-                                                style: const TextStyle(
-                                                  fontSize: 30,
-                                                  color: Color(0xFF0D47A1),
-                                                ),
-                                              )
-                                            : const Icon(
-                                                Icons.person,
-                                                size: 30,
-                                                color: Color(0xFF0D47A1),
-                                              ),
+                                  Text(
+                                    _userProfile?.name ?? 'Guest User',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                  const SizedBox(width: 16),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                  Text(
+                                    _userProfile?.email ?? 'Unknown Email',
+                                    style: TextStyle(
+                                      color: const Color.fromARGB(
+                                        255,
+                                        255,
+                                        255,
+                                        255,
+                                      ).withOpacity(0.8),
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                          Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            elevation: 3,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                        _userProfile?.name ?? 'Guest User',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 22,
+                                      const Text(
+                                        'My Balance:',
+                                        style: TextStyle(
+                                          fontSize: 18,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                       Text(
-                                        _userProfile?.email ?? 'Unknown Email',
+                                        '\$1000', // Placeholder for balance
                                         style: TextStyle(
-                                          color: Colors.white.withOpacity(0.8),
-                                          fontSize: 16,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.green[700],
                                         ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      _buildBalanceAction(
+                                        'Drop-off',
+                                        Icons.local_laundry_service,
+                                      ),
+                                      _buildBalanceAction(
+                                        'Pick up',
+                                        Icons.delivery_dining,
+                                      ),
+                                      _buildBalanceAction(
+                                        'Shop',
+                                        Icons.shopping_bag,
+                                      ),
+                                      _buildBalanceAction(
+                                        'Top up',
+                                        Icons.add_card,
                                       ),
                                     ],
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 20),
-                              Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                elevation: 3,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          const Text(
-                                            'My Balance:',
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          Text(
-                                            '\$1000', // Placeholder for balance
-                                            style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.green[700],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 10),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          _buildBalanceAction(
-                                            'Drop-off',
-                                            Icons.local_laundry_service,
-                                          ),
-                                          _buildBalanceAction(
-                                            'Pick up',
-                                            Icons.delivery_dining,
-                                          ),
-                                          _buildBalanceAction(
-                                            'Shop',
-                                            Icons.shopping_bag,
-                                          ),
-                                          _buildBalanceAction(
-                                            'Top up',
-                                            Icons.add_card,
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 24),
-
-                        // Explore Services Section
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                'Explore Our Services',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF0D47A1),
-                                ),
-                              ),
-                              TextButton(
-                                onPressed: _addServiceType,
-                                child: const Text(
-                                  'Add New',
-                                  style: TextStyle(
-                                    color: Colors.blue,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-
-                        _isLoadingServices
-                            ? const Center(child: CircularProgressIndicator())
-                            : _servicesErrorMessage != null
-                                ? Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Text(
-                                        'Error loading services: $_servicesErrorMessage',
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(color: Colors.red),
-                                      ),
-                                    ),
-                                  )
-                                : _serviceTypes.isEmpty
-                                    ? Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(16.0),
-                                          child: Column(
-                                            children: [
-                                              const Text('No services found. Add some!'),
-                                              const SizedBox(height: 10),
-                                              ElevatedButton.icon(
-                                                onPressed: _addServiceType,
-                                                icon: const Icon(Icons.add),
-                                                label: const Text('Add Service'),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      )
-                                    : Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                        child: GridView.builder(
-                                          shrinkWrap: true,
-                                          physics: const NeverScrollableScrollPhysics(),
-                                          gridDelegate:
-                                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                                crossAxisCount: 2, // 2 items per row
-                                                crossAxisSpacing: 10,
-                                                mainAxisSpacing: 10,
-                                                childAspectRatio: 3 / 3, // Adjust aspect ratio for better fit
-                                              ),
-                                          itemCount: _serviceTypes.length,
-                                          itemBuilder: (context, index) {
-                                            final service = _serviceTypes[index];
-                                            return _buildServiceCard(service);
-                                          },
-                                        ),
-                                      ),
-                        const SizedBox(height: 24),
-
-                        // Active Orders Section - Now navigates to OrderListScreen
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                'Active Orders',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF0D47A1),
-                                ),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => const OrderListScreen()),
-                                  );
-                                },
-                                child: const Text(
-                                  'View All Orders', // Changed text to be more descriptive
-                                  style: TextStyle(
-                                    color: Colors.blue,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        // You can still have a summary or a Lottie here, but clicking
-                        // "View All Orders" will take them to the full list.
-                        Center(
-                          child: Column(
-                            children: [
-                              Lottie.asset(
-                                'assets/lottie/blobs.json', // Corrected Lottie asset (ensure you have this in assets/lottie)
-                                height: 100,
-                                repeat: true,
-                              ),
-                              const Text('See your ongoing orders by clicking "View All Orders"'),
-                              const SizedBox(height: 20),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 24),
+
+                    // Explore Services Section
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Explore Our Services',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF0D47A1),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: _addServiceType,
+                            child: const Text(
+                              'Add New',
+                              style: TextStyle(
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    _isLoadingServices
+                        ? const Center(child: CircularProgressIndicator())
+                        : _servicesErrorMessage != null
+                        ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Text(
+                              'Error loading services: $_servicesErrorMessage',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(color: Colors.red),
+                            ),
+                          ),
+                        )
+                        : _serviceTypes.isEmpty
+                        ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              children: [
+                                const Text('No services found. Add some!'),
+                                const SizedBox(height: 10),
+                                ElevatedButton.icon(
+                                  onPressed: _addServiceType,
+                                  icon: const Icon(Icons.add),
+                                  label: const Text('Add Service'),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                        : Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: GridView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2, // 2 items per row
+                                  crossAxisSpacing: 10,
+                                  mainAxisSpacing: 10,
+                                  childAspectRatio:
+                                      3 /
+                                      3, // Adjust aspect ratio for better fit
+                                ),
+                            itemCount: _serviceTypes.length,
+                            itemBuilder: (context, index) {
+                              final service = _serviceTypes[index];
+                              return _buildServiceCard(service);
+                            },
+                          ),
+                        ),
+                    const SizedBox(height: 24),
+
+                    // Active Orders Section - Now navigates to OrderListScreen
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Active Orders',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF0D47A1),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const OrderListScreen(),
+                                ),
+                              );
+                            },
+                            child: const Text(
+                              'View All Orders', // Changed text to be more descriptive
+                              style: TextStyle(
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    // You can still have a summary or a Lottie here, but clicking
+                    // "View All Orders" will take them to the full list.
+                    Center(
+                      child: Column(
+                        children: [
+                          Lottie.asset(
+                            'assets/lottie/blobs.json', // Corrected Lottie asset (ensure you have this in assets/lottie)
+                            height: 100,
+                            repeat: true,
+                          ),
+                          const Text(
+                            'See your ongoing orders by clicking "View All Orders"',
+                          ),
+                          const SizedBox(height: 20),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                  ],
+                ),
+              ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           // Navigate to CreateOrderScreen and await result
@@ -770,7 +805,10 @@ class _HomeScreenState extends State<HomeScreen> {
           // If an order was successfully created (indicated by result == true)
           if (result == true) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Order created successfully!'), backgroundColor: Colors.blue),
+              const SnackBar(
+                content: Text('Order created successfully!'),
+                backgroundColor: Colors.blue,
+              ),
             );
           }
         },
@@ -828,7 +866,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   overflow: TextOverflow.ellipsis,
                 ),
                 // Since the API doesn't provide a cost, we'll put a placeholder
-                const Expanded( // Use Expanded to make sure the text fits
+                const Expanded(
+                  // Use Expanded to make sure the text fits
                   child: Text(
                     'Cost: \$XX.XX',
                     style: TextStyle(fontSize: 14, color: Colors.grey),
