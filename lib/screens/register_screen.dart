@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 // Assuming LoginScreenLaundry is where users go after registration
 
 import 'package:tugas_16/constatnt/app_image.dart';
-import 'package:tugas_16/models/auth_responses.dart';
+import 'package:tugas_16/models/api_model.dart';
 import 'package:tugas_16/screens/login_screen.dart';
 import 'package:tugas_16/services/api_service.dart';
 

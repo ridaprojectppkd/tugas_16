@@ -1,23 +1,19 @@
 // lib/services/api_service.dart
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:tugas_16/models/auth_responses.dart';
-import 'package:tugas_16/models/error_responses.dart';
-import 'package:tugas_16/models/order_list_response.dart';
-import 'package:tugas_16/models/order_responses.dart';
-import 'package:tugas_16/models/service_type_list_responses.dart';
-import 'package:tugas_16/models/single_service_type_responses.dart';
-import 'package:tugas_16/models/single_user_responses.dart';
+
+// PERBAIKAN KRITIS: Hanya import satu file ini untuk semua model
+import 'package:tugas_16/models/api_model.dart';
 
 class ApiService {
   final String baseUrl = 'https://applaundry.mobileprojp.com/api';
-  String? _authToken; // Store the authentication token
+  String? _authToken;
 
   void setAuthToken(String? token) {
     _authToken = token;
   }
 
-  String? get authToken => _authToken; // Getter for the token
+  String? get authToken => _authToken;
 
   Map<String, String> _getHeaders({bool includeAuth = true}) {
     final Map<String, String> headers = {
@@ -62,9 +58,7 @@ class ApiService {
     if (response.statusCode == 200) {
       final authResponse = AuthResponse.fromJson(jsonDecode(response.body));
       if (authResponse.data?.token != null) {
-        setAuthToken(
-          authResponse.data!.token,
-        ); // Store token on successful login
+        setAuthToken(authResponse.data!.token);
       }
       return authResponse;
     } else {
@@ -95,7 +89,7 @@ class ApiService {
 
   Future<SingleUserResponse> updateProfile(String name) async {
     final response = await http.put(
-      Uri.parse('$baseUrl/profile'), // According to Postman: PUT /profile
+      Uri.parse('$baseUrl/profile'),
       headers: _getHeaders(),
       body: jsonEncode({'name': name}),
     );
@@ -136,7 +130,6 @@ class ApiService {
       body: jsonEncode({'name': name}),
     );
 
-    // FIX: Accept both 200 OK and 201 Created as success status codes
     if (response.statusCode == 201 || response.statusCode == 200) {
       return SingleServiceTypeResponse.fromJson(jsonDecode(response.body));
     } else {
@@ -227,7 +220,6 @@ class ApiService {
       }),
     );
 
-    // CHANGED: Accept 200 OK as a success status for creating an order
     if (response.statusCode == 201 || response.statusCode == 200) {
       return SingleOrderResponse.fromJson(jsonDecode(response.body));
     } else {
@@ -253,7 +245,6 @@ class ApiService {
     }
   }
 
-  ////////////Delete Order///////////////////////
   Future<SingleOrderResponse> deleteOrder(int id) async {
     final response = await http.delete(
       Uri.parse('$baseUrl/orders/$id'),

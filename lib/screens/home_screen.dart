@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-// Corrected imports to match your project structure: tugas_16
-import 'package:tugas_16/models/service_type.dart';
-import 'package:tugas_16/models/service_type_list_responses.dart';
-import 'package:tugas_16/models/single_user_responses.dart';
-import 'package:tugas_16/models/user_model.dart';
-
-import 'package:tugas_16/screens/profile_screen.dart'; // Corrected filename and class name assumption
-import 'package:tugas_16/screens/login_screen.dart'; // Corrected class name assumption
+// PERBAIKAN KRITIS: Hanya import satu file ini untuk semua model
+import 'package:tugas_16/models/api_model.dart';
 import 'package:tugas_16/services/api_service.dart';
 import 'package:tugas_16/services/local_storage_service.dart';
-import 'package:tugas_16/screens/create_order_screen.dart'; // NEW: Import CreateOrderScreen
-import 'package:tugas_16/screens/order_list_screen.dart'; // NEW: Import OrderListScreen
+
+// Import layar lain yang akan dinavigasi dari sini
+import 'package:tugas_16/screens/profile_screen.dart';
+import 'package:tugas_16/screens/login_screen.dart';
+import 'package:tugas_16/screens/create_order_screen.dart';
+import 'package:tugas_16/screens/order_list_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -54,9 +52,12 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       final String? token = await _localStorageService.getAuthToken();
       if (token == null) {
+        print('DEBUG(HomeScreen): No authentication token found. Redirecting to login.');
         throw Exception("No authentication token found. Please log in.");
       }
       _apiService.setAuthToken(token);
+      print('DEBUG(HomeScreen): Token set: ${token.substring(0, 10)}...');
+
       final SingleUserResponse response = await _apiService.getProfile();
 
       if (!mounted) return;
@@ -64,16 +65,19 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() {
           _userProfile = response.data;
         });
+        print('DEBUG(HomeScreen): User profile fetched: ID=${_userProfile?.id}, Name=${_userProfile?.name}');
       } else {
         setState(() {
           _profileErrorMessage = response.message;
         });
+        print('DEBUG(HomeScreen): User profile data is null or message: ${response.message}');
       }
     } catch (e) {
       if (!mounted) return;
       setState(() {
         _profileErrorMessage = e.toString().replaceFirst('Exception: ', '');
       });
+      print('DEBUG(HomeScreen): Error fetching user profile: $_profileErrorMessage');
       if (_profileErrorMessage?.contains("Unauthenticated") == true) {
         _handleLogout();
       }
@@ -93,26 +97,27 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     try {
-      final String? token =
-          _apiService.authToken ?? await _localStorageService.getAuthToken();
+      final String? token = _apiService.authToken ?? await _localStorageService.getAuthToken();
       if (token == null) {
+        print('DEBUG(HomeScreen): No authentication token found for services. Redirecting to login.');
         throw Exception("No authentication token found for services.");
       }
       _apiService.setAuthToken(token);
 
-      final ServiceTypeListResponse response =
-          await _apiService.getServiceTypes();
+      final ServiceTypeListResponse response = await _apiService.getServiceTypes();
 
       if (!mounted) return;
       if (response.data.isNotEmpty) {
         setState(() {
           _serviceTypes = response.data;
         });
+        print('DEBUG(HomeScreen): Service types fetched: ${_serviceTypes.length} items.');
       } else {
         setState(() {
           _servicesErrorMessage = "No service types found.";
           _serviceTypes = [];
         });
+        print('DEBUG(HomeScreen): No service types found or message: ${response.message}');
       }
     } catch (e) {
       if (!mounted) return;
@@ -120,6 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
         _servicesErrorMessage = e.toString().replaceFirst('Exception: ', '');
         _serviceTypes = [];
       });
+      print('DEBUG(HomeScreen): Error fetching service types: $_servicesErrorMessage');
       if (_servicesErrorMessage?.contains("Unauthenticated") == true) {
         _handleLogout();
       }
@@ -168,37 +174,23 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.of(dialogContext).pop(); // Close dialog
 
                 if (!mounted) return;
-                setState(() {
-                  _isLoadingServices = true;
-                });
+                setState(() { _isLoadingServices = true; });
 
                 try {
-                  final response = await _apiService.addServiceType(
-                    nameController.text.trim(),
-                  );
+                  final response = await _apiService.addServiceType(nameController.text.trim());
                   if (!mounted) return;
                   scaffoldMessenger.showSnackBar(
-                    SnackBar(
-                      content: Text(response.message),
-                      backgroundColor: Colors.green,
-                    ),
+                    SnackBar(content: Text(response.message), backgroundColor: Colors.green),
                   );
                   await _fetchServiceTypes(); // Refresh list
                 } catch (e) {
                   if (!mounted) return;
                   scaffoldMessenger.showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        "Failed to add service: ${e.toString().replaceFirst('Exception: ', '')}",
-                      ),
-                      backgroundColor: Colors.red,
-                    ),
+                    SnackBar(content: Text("Failed to add service: ${e.toString().replaceFirst('Exception: ', '')}"), backgroundColor: Colors.red),
                   );
                 } finally {
                   if (!mounted) return;
-                  setState(() {
-                    _isLoadingServices = false;
-                  });
+                  setState(() { _isLoadingServices = false; });
                 }
               },
             ),
@@ -209,9 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _editServiceType(ServiceType service) async {
-    final TextEditingController nameController = TextEditingController(
-      text: service.name,
-    );
+    final TextEditingController nameController = TextEditingController(text: service.name);
     final scaffoldMessenger = ScaffoldMessenger.of(context);
 
     await showDialog(
@@ -235,48 +225,30 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: () async {
                 if (nameController.text.trim().isEmpty) {
                   scaffoldMessenger.showSnackBar(
-                    const SnackBar(
-                      content: Text("Service name cannot be empty!"),
-                      backgroundColor: Colors.red,
-                    ),
+                    const SnackBar(content: Text("Service name cannot be empty!"), backgroundColor: Colors.red),
                   );
                   return;
                 }
                 Navigator.of(dialogContext).pop(); // Close dialog
 
                 if (!mounted) return;
-                setState(() {
-                  _isLoadingServices = true;
-                });
+                setState(() { _isLoadingServices = true; });
 
                 try {
-                  final response = await _apiService.updateServiceType(
-                    service.id!,
-                    nameController.text.trim(),
-                  );
+                  final response = await _apiService.updateServiceType(service.id!, nameController.text.trim());
                   if (!mounted) return;
                   scaffoldMessenger.showSnackBar(
-                    SnackBar(
-                      content: Text(response.message),
-                      backgroundColor: Colors.green,
-                    ),
+                    SnackBar(content: Text(response.message), backgroundColor: Colors.green),
                   );
                   await _fetchServiceTypes();
                 } catch (e) {
                   if (!mounted) return;
                   scaffoldMessenger.showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        "Failed to update service: ${e.toString().replaceFirst('Exception: ', '')}",
-                      ),
-                      backgroundColor: Colors.red,
-                    ),
+                    SnackBar(content: Text("Failed to update service: ${e.toString().replaceFirst('Exception: ', '')}"), backgroundColor: Colors.red),
                   );
                 } finally {
                   if (!mounted) return;
-                  setState(() {
-                    _isLoadingServices = false;
-                  });
+                  setState(() { _isLoadingServices = false; });
                 }
               },
             ),
@@ -294,25 +266,16 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (BuildContext dialogContext) {
         return AlertDialog(
           title: const Text('Confirm Delete'),
-          content: const Text(
-            'Are you sure you want to delete this service type?',
-          ),
+          content: const Text('Are you sure you want to delete this service type?'),
           actions: <Widget>[
             TextButton(
               child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.of(dialogContext).pop(false);
-              },
+              onPressed: () { Navigator.of(dialogContext).pop(false); },
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-              child: const Text(
-                'Delete',
-                style: TextStyle(color: Colors.white),
-              ),
-              onPressed: () {
-                Navigator.of(dialogContext).pop(true);
-              },
+              child: const Text('Delete', style: TextStyle(color: Colors.white)),
+              onPressed: () { Navigator.of(dialogContext).pop(true); },
             ),
           ],
         );
@@ -321,34 +284,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (confirm == true) {
       if (!mounted) return;
-      setState(() {
-        _isLoadingServices = true;
-      });
+      setState(() { _isLoadingServices = true; });
       try {
         final response = await _apiService.deleteServiceType(id);
         if (!mounted) return;
         scaffoldMessenger.showSnackBar(
-          SnackBar(
-            content: Text(response.message),
-            backgroundColor: Colors.green,
-          ),
+          SnackBar(content: Text(response.message), backgroundColor: Colors.green),
         );
         await _fetchServiceTypes();
       } catch (e) {
         if (!mounted) return;
         scaffoldMessenger.showSnackBar(
-          SnackBar(
-            content: Text(
-              "Failed to delete service: ${e.toString().replaceFirst('Exception: ', '')}",
-            ),
-            backgroundColor: Colors.red,
-          ),
+          SnackBar(content: Text("Failed to delete service: ${e.toString().replaceFirst('Exception: ', '')}"), backgroundColor: Colors.red),
         );
       } finally {
         if (!mounted) return;
-        setState(() {
-          _isLoadingServices = false;
-        });
+        setState(() { _isLoadingServices = false; });
       }
     }
   }
@@ -362,7 +313,6 @@ class _HomeScreenState extends State<HomeScreen> {
       _isLoadingServices = true;
     });
     try {
-      // await _apiService.logout();
       await _localStorageService.clearAuthToken();
       if (!mounted) return;
       scaffoldMessenger.showSnackBar(
@@ -374,9 +324,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (!mounted) return;
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(
-          builder: (context) => const LoginScreenLaundry(),
-        ), // Corrected to LoginScreen
+        MaterialPageRoute(builder: (context) => const LoginScreenLaundry()),
         (Route<dynamic> route) => false,
       );
     } catch (e) {
@@ -402,7 +350,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('FreshClean Laundry'),
-        backgroundColor: const Color(0xFF0D47A1), // Dark blue
+        backgroundColor: const Color(0xFF0D47A1),
         foregroundColor: Colors.white,
         centerTitle: true,
       ),
@@ -410,62 +358,42 @@ class _HomeScreenState extends State<HomeScreen> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            _userProfile == null
-                ? Container(
-                  height: 200,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage("assets/images/download.jpg"),
-                      fit: BoxFit.cover,
+            UserAccountsDrawerHeader(
+              accountName: _isLoadingProfile
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : Text(
+                      _userProfile?.name ?? (_profileErrorMessage ?? 'Loading Profile...'),
+                      style: const TextStyle(color: Colors.white),
                     ),
-                  ),
-                  child: UserAccountsDrawerHeader(
-                    accountName:
-                        _isLoadingProfile
-                            ? const CircularProgressIndicator(
-                              color: Color.fromARGB(255, 255, 255, 255),
-                            )
-                            : Text(
-                              _profileErrorMessage ?? 'Loading Profile...',
-                            ),
-                    accountEmail: const Text(''),
-                    currentAccountPicture: const CircleAvatar(
-                      backgroundColor: Colors.white,
-                      child: Icon(
+              accountEmail: Text(
+                _userProfile?.email ?? (_profileErrorMessage ?? 'Please Login'),
+                style: const TextStyle(color: Colors.white70),
+              ),
+              currentAccountPicture: CircleAvatar(
+                backgroundColor: Colors.white,
+                child: _userProfile != null && _userProfile!.name.isNotEmpty
+                    ? Text(
+                        _userProfile!.name.substring(0, 1).toUpperCase(),
+                        style: const TextStyle(
+                          fontSize: 40,
+                          color: Color(0xFF0D47A1),
+                        ),
+                      )
+                    : const Icon(
                         Icons.person,
                         size: 40,
                         color: Color(0xFF0D47A1),
                       ),
-                    ),
-                    decoration: const BoxDecoration(color: Colors.transparent),
-                  ),
-                )
-                : Container(
-                  height: 200,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage("assets/images/download.jpg"),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  child: UserAccountsDrawerHeader(
-                    accountName: Text(_userProfile!.name),
-                    accountEmail: Text(_userProfile!.email),
-                    currentAccountPicture: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      child: Text(
-                        _userProfile!.name.isNotEmpty
-                            ? _userProfile!.name.substring(0, 1).toUpperCase()
-                            : '',
-                        style: const TextStyle(
-                          fontSize: 40.0,
-                          color: Color(0xFF0D47A1),
-                        ),
-                      ),
-                    ),
-                    decoration: const BoxDecoration(color: Colors.transparent),
-                  ),
+              ),
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("assets/images/download.jpg"),
+                  fit: BoxFit.cover,
+                  colorFilter: ColorFilter.mode(Colors.black54, BlendMode.darken),
                 ),
+                color: Color(0xFF0D47A1),
+              ),
+            ),
             ListTile(
               leading: const Icon(Icons.person),
               title: const Text('My Profile'),
@@ -519,297 +447,346 @@ class _HomeScreenState extends State<HomeScreen> {
           _isLoadingProfile || _isLoadingServices
               ? const Center(child: CircularProgressIndicator())
               : SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // User Profile Section (similar to the image)
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(24.0),
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Color.fromARGB(255, 15, 255, 255),
-                            Color.fromARGB(255, 198, 255, 145),
-                          ],
-                        ),
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(30),
-                          bottomRight: Radius.circular(30),
-                        ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 30,
-                                backgroundColor: Colors.white,
-                                child:
-                                    _userProfile != null &&
-                                            _userProfile!.name.isNotEmpty
-                                        ? Text(
-                                          _userProfile!.name
-                                              .substring(0, 1)
-                                              .toUpperCase(),
-                                          style: const TextStyle(
-                                            fontSize: 30,
-                                            color: Color(0xFF0D47A1),
-                                          ),
-                                        )
-                                        : const Icon(
-                                          Icons.person,
-                                          size: 30,
-                                          color: Color(0xFF0D47A1),
-                                        ),
-                              ),
-                              const SizedBox(width: 16),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    _userProfile?.name ?? 'Guest User',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    _userProfile?.email ?? 'Unknown Email',
-                                    style: TextStyle(
-                                      color: const Color.fromARGB(
-                                        255,
-                                        255,
-                                        255,
-                                        255,
-                                      ).withOpacity(0.8),
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(24.0),
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Color.fromARGB(255, 0, 95, 204),
+                              Color(0xFF0D47A1),
                             ],
                           ),
-                          const SizedBox(height: 20),
-                          Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 3,
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        'My Balance:',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      Text(
-                                        '\$1000', // Placeholder for balance
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.green[700],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      _buildBalanceAction(
-                                        'Drop-off',
-                                        Icons.local_laundry_service,
-                                      ),
-                                      _buildBalanceAction(
-                                        'Pick up',
-                                        Icons.delivery_dining,
-                                      ),
-                                      _buildBalanceAction(
-                                        'Shop',
-                                        Icons.shopping_bag,
-                                      ),
-                                      _buildBalanceAction(
-                                        'Top up',
-                                        Icons.add_card,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(30),
+                            bottomRight: Radius.circular(30),
                           ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Explore Services Section
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Explore Our Services',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF0D47A1),
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: _addServiceType,
-                            child: const Text(
-                              'Add New',
-                              style: TextStyle(
-                                color: Colors.blue,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-
-                    _isLoadingServices
-                        ? const Center(child: CircularProgressIndicator())
-                        : _servicesErrorMessage != null
-                        ? Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Text(
-                              'Error loading services: $_servicesErrorMessage',
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(color: Colors.red),
-                            ),
-                          ),
-                        )
-                        : _serviceTypes.isEmpty
-                        ? Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
                               children: [
-                                const Text('No services found. Add some!'),
-                                const SizedBox(height: 10),
-                                ElevatedButton.icon(
-                                  onPressed: _addServiceType,
-                                  icon: const Icon(Icons.add),
-                                  label: const Text('Add Service'),
+                                CircleAvatar(
+                                  radius: 30,
+                                  backgroundColor: Colors.white,
+                                  child:
+                                      _userProfile != null &&
+                                              _userProfile!.name.isNotEmpty
+                                          ? Text(
+                                              _userProfile!.name
+                                                  .substring(0, 1)
+                                                  .toUpperCase(),
+                                              style: const TextStyle(
+                                                fontSize: 30,
+                                                color: Color(0xFF0D47A1),
+                                              ),
+                                            )
+                                          : const Icon(
+                                              Icons.person,
+                                              size: 30,
+                                              color: Color(0xFF0D47A1),
+                                            ),
+                                ),
+                                const SizedBox(width: 16),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      _userProfile?.name ?? 'Guest User',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      _userProfile?.email ?? 'Unknown Email',
+                                      style: TextStyle(
+                                        color: Colors.white.withOpacity(0.8),
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                          ),
-                        )
-                        : Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: GridView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2, // 2 items per row
-                                  crossAxisSpacing: 10,
-                                  mainAxisSpacing: 10,
-                                  childAspectRatio:
-                                      3 /
-                                      3, // Adjust aspect ratio for better fit
+                            const SizedBox(height: 20),
+                            Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              elevation: 3,
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text(
+                                          'My Balance:',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          '\$1000', // Placeholder untuk saldo
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.green[700],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        _buildBalanceAction(
+                                          'Drop-off',
+                                          Icons.local_laundry_service,
+                                        ),
+                                        _buildBalanceAction(
+                                          'Pick up',
+                                          Icons.delivery_dining,
+                                        ),
+                                        _buildBalanceAction(
+                                          'Shop',
+                                          Icons.shopping_bag,
+                                        ),
+                                        _buildBalanceAction(
+                                          'Top up',
+                                          Icons.add_card,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
-                            itemCount: _serviceTypes.length,
-                            itemBuilder: (context, index) {
-                              final service = _serviceTypes[index];
-                              return _buildServiceCard(service);
-                            },
-                          ),
-                        ),
-                    const SizedBox(height: 24),
-
-                    // Active Orders Section - Now navigates to OrderListScreen
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Active Orders',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF0D47A1),
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const OrderListScreen(),
-                                ),
-                              );
-                            },
-                            child: const Text(
-                              'View All Orders', // Changed text to be more descriptive
-                              style: TextStyle(
-                                color: Colors.blue,
-                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    // You can still have a summary or a Lottie here, but clicking
-                    // "View All Orders" will take them to the full list.
-                    Center(
-                      child: Column(
-                        children: [
-                          Lottie.asset(
-                            'assets/lottie/blobs.json', // Corrected Lottie asset (ensure you have this in assets/lottie)
-                            height: 100,
-                            repeat: true,
-                          ),
-                          const Text(
-                            'See your ongoing orders by clicking "View All Orders"',
-                          ),
-                          const SizedBox(height: 20),
-                        ],
+                      const SizedBox(height: 24),
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'Explore Our Services',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF0D47A1),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: _addServiceType,
+                              child: const Text(
+                                'Add New',
+                                style: TextStyle(
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                  ],
+                      const SizedBox(height: 16),
+
+                      _isLoadingServices
+                          ? const Center(child: CircularProgressIndicator())
+                          : _servicesErrorMessage != null
+                              ? Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Text(
+                                      'Error loading services: $_servicesErrorMessage',
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(color: Colors.red),
+                                    ),
+                                  ),
+                                )
+                              : _serviceTypes.isEmpty
+                                  ? Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Column(
+                                          children: [
+                                            const Text('No services found. Add some!'),
+                                            const SizedBox(height: 10),
+                                            ElevatedButton.icon(
+                                              onPressed: _addServiceType,
+                                              icon: const Icon(Icons.add),
+                                              label: const Text('Add Service'),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                  : Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                      child: GridView.builder(
+                                        shrinkWrap: true,
+                                        physics: const NeverScrollableScrollPhysics(),
+                                        gridDelegate:
+                                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount: 2,
+                                              crossAxisSpacing: 10,
+                                              mainAxisSpacing: 10,
+                                              childAspectRatio: 3 / 3,
+                                            ),
+                                        itemCount: _serviceTypes.length,
+                                        itemBuilder: (context, index) {
+                                          final service = _serviceTypes[index];
+                                          return _buildServiceCard(service);
+                                        },
+                                      ),
+                                    ),
+                      const SizedBox(height: 24),
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'Active Orders',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF0D47A1),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const OrderListScreen()),
+                                );
+                              },
+                              child: const Text(
+                                'View All Orders',
+                                style: TextStyle(
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Center(
+                        child: Column(
+                          children: [
+                            Lottie.asset(
+                              'assets/lottie/blobs.json',
+                              height: 100,
+                              repeat: false,
+                            ),
+                            const Text('See your ongoing orders by clicking "View All Orders"'),
+                            const SizedBox(height: 20),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+                  ),
                 ),
-              ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          // Navigate to CreateOrderScreen and await result
-          final result = await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const CreateOrderScreen()),
+          final selectedLayanan = await showDialog<String>(
+            context: context,
+            builder: (BuildContext dialogContext) {
+              return AlertDialog(
+                title: const Text('Choose Service Detail'),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    ListTile(
+                      title: const Text('Antar'),
+                      onTap: () {
+                        Navigator.of(dialogContext).pop('Antar');
+                      },
+                    ),
+                    ListTile(
+                      title: const Text('Jemput'),
+                      onTap: () {
+                        Navigator.of(dialogContext).pop('Jemput');
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
           );
-          // If an order was successfully created (indicated by result == true)
-          if (result == true) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Order created successfully!'),
-                backgroundColor: Colors.blue,
+
+          if (selectedLayanan != null) {
+            User? currentUserProfile;
+            try {
+              print('DEBUG(HomeScreen FAB): Attempting to get auth token...');
+              final String? token = _apiService.authToken ?? await _localStorageService.getAuthToken();
+              if (token == null) {
+                print('DEBUG(HomeScreen FAB): No auth token found. Redirecting to login.');
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("No authentication token found. Please log in."), backgroundColor: Colors.red),
+                );
+                _handleLogout();
+                return;
+              }
+              _apiService.setAuthToken(token);
+              print('DEBUG(HomeScreen FAB): Token set: ${token.substring(0, 10)}...');
+
+              print('DEBUG(HomeScreen FAB): Fetching user profile...');
+              final userResponse = await _apiService.getProfile();
+              currentUserProfile = userResponse.data;
+              print('DEBUG(HomeScreen FAB): User profile fetched: ${currentUserProfile?.id ?? 'NULL ID'}');
+            } catch (e) {
+              print('DEBUG(HomeScreen FAB): Error fetching user profile: $e');
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("Failed to load user profile for new order: ${e.toString().replaceFirst('Exception: ', '')}"), backgroundColor: Colors.red),
+              );
+              if (e.toString().contains("Unauthenticated")) {
+                 _handleLogout();
+              }
+              return;
+            }
+
+            if (currentUserProfile?.id == null) {
+               print('DEBUG(HomeScreen FAB): User ID is NULL after fetching profile. Cannot create order.');
+               ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("User ID not available. Cannot create order."), backgroundColor: Colors.red),
+              );
+              return;
+            }
+            print('DEBUG(HomeScreen FAB): User ID to be passed: ${currentUserProfile!.id}');
+
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CreateOrderScreen(
+                  userId: currentUserProfile!.id,
+                  initialLayanan: selectedLayanan,
+                ),
               ),
             );
+            if (result == true) {
+              _fetchServiceTypes();
+            }
           }
         },
         backgroundColor: const Color(0xFF0D47A1),
@@ -852,7 +829,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     size: 40,
                     color: Colors.blue[700],
                   ),
-                ), // Generic icon
+                ),
                 const SizedBox(height: 10),
                 Text(
                   service.name,
@@ -865,9 +842,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                // Since the API doesn't provide a cost, we'll put a placeholder
                 const Expanded(
-                  // Use Expanded to make sure the text fits
                   child: Text(
                     'Cost: \$XX.XX',
                     style: TextStyle(fontSize: 14, color: Colors.grey),
@@ -887,17 +862,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   _deleteServiceType(service.id!);
                 }
               },
-              itemBuilder:
-                  (BuildContext context) => <PopupMenuEntry<String>>[
-                    const PopupMenuItem<String>(
-                      value: 'edit',
-                      child: Text('Edit'),
-                    ),
-                    const PopupMenuItem<String>(
-                      value: 'delete',
-                      child: Text('Delete'),
-                    ),
-                  ],
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                const PopupMenuItem<String>(
+                  value: 'edit',
+                  child: Text('Edit'),
+                ),
+                const PopupMenuItem<String>(
+                  value: 'delete',
+                  child: Text('Delete'),
+                ),
+              ],
               icon: const Icon(Icons.more_vert),
             ),
           ),

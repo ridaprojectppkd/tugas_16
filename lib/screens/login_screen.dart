@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:tugas_16/constatnt/app_image.dart';
-import 'package:tugas_16/models/auth_responses.dart';
+import 'package:tugas_16/models/api_model.dart';
 import 'package:tugas_16/screens/home_screen.dart';
 import 'package:tugas_16/screens/register_screen.dart';
 import 'package:tugas_16/services/api_service.dart';

@@ -249,7 +249,7 @@
 //                         mainAxisAlignment: MainAxisAlignment.center,
 //                         children: [
 //                           Lottie.asset(
-//                             'assets/lottie/empty_box.json', // Pastikan file Lottie ini ada di assets/lottie/
+//                             'assets/lottie/blobs.json', // Pastikan file Lottie ini ada di assets/lottie/
 //                             height: 150,
 //                             repeat: false,
 //                           ),

@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:tugas_16/models/single_user_responses.dart';
-
-// Import your services and models
-import 'package:tugas_16/models/user_model.dart';
+import 'package:tugas_16/models/api_model.dart';
 import 'package:tugas_16/screens/home_screen.dart';
 import 'package:tugas_16/screens/login_screen.dart';
 import 'package:tugas_16/services/api_service.dart';
-import 'package:tugas_16/services/local_storage_service.dart'; // Adjust path as needed
+import 'package:tugas_16/services/local_storage_service.dart';
+
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
