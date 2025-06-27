@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:tugas_16/models/api_model.dart';
 
 // Import semua model dari satu file flutter_models.dart
-import 'package:tugas_16/models/api_model.dart';
 import 'package:tugas_16/services/api_service.dart';
 import 'package:tugas_16/services/local_storage_service.dart';
 
 
-// Import other screens
+// Import layar lain yang akan dinavigasi dari sini
 import 'package:tugas_16/screens/create_order_screen.dart';
 import 'package:tugas_16/screens/login_screen.dart';
+import 'package:tugas_16/screens/order_detail_screen.dart'; // NEW: Import OrderDetailScreen
 
 
 class OrderListScreen extends StatefulWidget {
@@ -247,7 +248,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Lottie.asset(
-                            'assets/lottie/blobs.json',
+                            'assets/lottie/empty_box.json',
                             height: 150,
                             repeat: false,
                           ),
@@ -301,7 +302,6 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                   print('DEBUG: Token set: ${token.substring(0, 10)}...');
 
                                   print('DEBUG: Fetching user profile...');
-                                  // Asumsi API /me mengembalikan SingleUserResponse
                                   final userResponse = await _apiService.getProfile();
                                   currentUserProfile = userResponse.data;
                                   print('DEBUG: User profile fetched: ${currentUserProfile?.id ?? 'NULL ID'}');
@@ -354,88 +354,141 @@ class _OrderListScreenState extends State<OrderListScreen> {
                       itemCount: _orders.length,
                       itemBuilder: (context, index) {
                         final order = _orders[index];
-                        return Card(
-                          margin: const EdgeInsets.only(bottom: 16.0),
-                          elevation: 4,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Order ID: ${order.id ?? 'N/A'}',
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xFF0D47A1),
-                                      ),
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                      decoration: BoxDecoration(
-                                        color: _getStatusColor(order.status).withOpacity(0.2),
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Text(
-                                        order.status,
-                                        style: TextStyle(
-                                          color: _getStatusColor(order.status),
+                        return GestureDetector( // Menggunakan GestureDetector untuk menangani onTap
+                          onTap: () {
+                            if (order.id != null) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => OrderDetailScreen(orderId: order.id!),
+                                ),
+                              ).then((_) => _fetchOrders()); // Refresh daftar setelah kembali dari detail
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Order ID not available for details.'), backgroundColor: Colors.red),
+                              );
+                            }
+                          },
+                          child: Card(
+                            margin: const EdgeInsets.only(bottom: 16.0),
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Order ID: ${order.id ?? 'N/A'}',
+                                        style: const TextStyle(
+                                          fontSize: 18,
                                           fontWeight: FontWeight.bold,
+                                          color: Color(0xFF0D47A1),
                                         ),
                                       ),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 4,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: _getStatusColor(
+                                            order.status,
+                                          ).withOpacity(0.2),
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: Text(
+                                          order.status,
+                                          style: TextStyle(
+                                            color: _getStatusColor(order.status),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const Divider(height: 20),
+                                  Text(
+                                    'Service Type: ${order.serviceType?.name ?? 'N/A'}',
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Service Option: ${order.layanan}',
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Created At: ${order.createdAt?.toLocal().toString().split('.')[0] ?? 'N/A'}',
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey,
                                     ),
-                                  ],
-                                ),
-                                const Divider(height: 20),
-                                Text('Service Type: ${order.serviceType?.name ?? 'N/A'}', style: const TextStyle(fontSize: 16)),
-                                const SizedBox(height: 4),
-                                Text('Service Option: ${order.layanan}', style: const TextStyle(fontSize: 16)),
-                                const SizedBox(height: 4),
-                                Text('Created At: ${order.createdAt?.toLocal().toString().split('.')[0] ?? 'N/A'}', style: const TextStyle(fontSize: 14, color: Colors.grey)),
-                                const SizedBox(height: 4),
-                                Text('Updated At: ${order.updatedAt?.toLocal().toString().split('.')[0] ?? 'N/A'}', style: const TextStyle(fontSize: 14, color: Colors.grey)),
-                                const SizedBox(height: 8),
-                                const Text(
-                                  'Estimated Cost: \$XX.XX',
-                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.green),
-                                ),
-                                const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    if (order.status.toLowerCase() == 'baru')
-                                      ElevatedButton(
-                                        onPressed: () => _updateOrderStatus(order.id!, 'Proses'),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.orange,
-                                          foregroundColor: Colors.white,
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                        ),
-                                        child: const Text('Mark as "Proses"'),
-                                      ),
-                                    const SizedBox(width: 8),
-                                    if (order.status.toLowerCase() == 'proses')
-                                      ElevatedButton(
-                                        onPressed: () => _updateOrderStatus(order.id!, 'Selesai'),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.green,
-                                          foregroundColor: Colors.white,
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                        ),
-                                        child: const Text('Mark as "Selesai"'),
-                                      ),
-                                    const SizedBox(width: 8),
-                                    IconButton(
-                                      icon: const Icon(Icons.delete, color: Colors.red),
-                                      onPressed: () => _deleteOrder(order.id!),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Updated At: ${order.updatedAt?.toLocal().toString().split('.')[0] ?? 'N/A'}',
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey,
                                     ),
-                                  ],
-                                ),
-                              ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  const Text(
+                                    'Estimated Cost: \$XX.XX', // Placeholder for cost
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      if (order.status.toLowerCase() == 'baru')
+                                        ElevatedButton(
+                                          onPressed: () =>
+                                              _updateOrderStatus(order.id!, 'Proses'),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.orange,
+                                            foregroundColor: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(8),
+                                            ),
+                                          ),
+                                          child: const Text('Mark as "Proses"'),
+                                        ),
+                                      const SizedBox(width: 8),
+                                      if (order.status.toLowerCase() == 'proses')
+                                        ElevatedButton(
+                                          onPressed: () => _updateOrderStatus(
+                                            order.id!,
+                                            'Selesai',
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.green,
+                                            foregroundColor: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(8),
+                                            ),
+                                          ),
+                                          child: const Text('Mark as "Selesai"'),
+                                        ),
+                                      const SizedBox(width: 8),
+                                      IconButton(
+                                        icon: const Icon(Icons.delete, color: Colors.red),
+                                        onPressed: () => _deleteOrder(order.id!),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         );
@@ -472,10 +525,8 @@ class _OrderListScreenState extends State<OrderListScreen> {
           if (selectedLayanan != null) {
             User? currentUserProfile;
             try {
-              print('DEBUG: Attempting to get auth token...');
               final String? token = _apiService.authToken ?? await _localStorageService.getAuthToken();
               if (token == null) {
-                print('DEBUG: No auth token found. Redirecting to login.');
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text("No authentication token found. Please log in."), backgroundColor: Colors.red),
                 );
@@ -483,14 +534,10 @@ class _OrderListScreenState extends State<OrderListScreen> {
                 return;
               }
               _apiService.setAuthToken(token);
-              print('DEBUG: Token set: ${token.substring(0, 10)}...');
 
-              print('DEBUG: Fetching user profile...');
               final userResponse = await _apiService.getProfile();
               currentUserProfile = userResponse.data;
-              print('DEBUG: User profile fetched: ${currentUserProfile?.id ?? 'NULL ID'}');
             } catch (e) {
-              print('DEBUG: Error fetching user profile: $e');
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text("Failed to load user profile for new order: ${e.toString().replaceFirst('Exception: ', '')}"), backgroundColor: Colors.red),
               );
@@ -501,13 +548,11 @@ class _OrderListScreenState extends State<OrderListScreen> {
             }
 
             if (currentUserProfile?.id == null) {
-               print('DEBUG: User ID is NULL after fetching profile. Cannot create order.');
                ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text("User ID not available. Cannot create order."), backgroundColor: Colors.red),
               );
               return;
             }
-            print('DEBUG: User ID to be passed: ${currentUserProfile!.id}');
 
             final result = await Navigator.push(
               context,
