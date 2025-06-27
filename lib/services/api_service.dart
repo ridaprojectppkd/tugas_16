@@ -1,9 +1,10 @@
 // lib/services/api_service.dart
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
-// PERBAIKAN KRITIS: Hanya import satu file ini untuk semua model
 import 'package:tugas_16/models/api_model.dart';
+
+// Import semua model dari satu file flutter_models.dart
+
 
 class ApiService {
   final String baseUrl = 'https://applaundry.mobileprojp.com/api';
@@ -229,9 +230,10 @@ class ApiService {
     }
   }
 
+  // PERBAIKAN KRITIS: Mengubah method dari PUT menjadi POST untuk update status
   Future<SingleOrderResponse> updateOrderStatus(int id, String status) async {
-    final response = await http.put(
-      Uri.parse('$baseUrl/orders/$id/status'),
+    final response = await http.post( // <-- Perubahan di sini
+      Uri.parse('$baseUrl/orders/$id/status'), // Asumsi endpoint ini menerima POST untuk update status
       headers: _getHeaders(),
       body: jsonEncode({'status': status}),
     );

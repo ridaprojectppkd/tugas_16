@@ -10,7 +10,7 @@ import 'package:tugas_16/services/local_storage_service.dart';
 // Import layar lain yang akan dinavigasi dari sini
 import 'package:tugas_16/screens/create_order_screen.dart';
 import 'package:tugas_16/screens/login_screen.dart';
-import 'package:tugas_16/screens/order_detail_screen.dart'; // NEW: Import OrderDetailScreen
+import 'package:tugas_16/screens/order_detail_screen.dart';
 
 
 class OrderListScreen extends StatefulWidget {
@@ -288,10 +288,8 @@ class _OrderListScreenState extends State<OrderListScreen> {
                               if (selectedLayanan != null) {
                                 User? currentUserProfile;
                                 try {
-                                  print('DEBUG: Attempting to get auth token...');
                                   final String? token = _apiService.authToken ?? await _localStorageService.getAuthToken();
                                   if (token == null) {
-                                    print('DEBUG: No auth token found. Redirecting to login.');
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(content: Text("No authentication token found. Please log in."), backgroundColor: Colors.red),
                                     );
@@ -299,14 +297,10 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                     return;
                                   }
                                   _apiService.setAuthToken(token);
-                                  print('DEBUG: Token set: ${token.substring(0, 10)}...');
 
-                                  print('DEBUG: Fetching user profile...');
                                   final userResponse = await _apiService.getProfile();
                                   currentUserProfile = userResponse.data;
-                                  print('DEBUG: User profile fetched: ${currentUserProfile?.id ?? 'NULL ID'}');
                                 } catch (e) {
-                                  print('DEBUG: Error fetching user profile: $e');
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(content: Text("Failed to load user profile for new order: ${e.toString().replaceFirst('Exception: ', '')}"), backgroundColor: Colors.red),
                                   );
@@ -317,13 +311,11 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                 }
 
                                 if (currentUserProfile?.id == null) {
-                                   print('DEBUG: User ID is NULL after fetching profile. Cannot create order.');
                                    ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(content: Text("User ID not available. Cannot create order."), backgroundColor: Colors.red),
                                   );
                                   return;
                                 }
-                                print('DEBUG: User ID to be passed: ${currentUserProfile!.id}');
 
                                 final result = await Navigator.push(
                                   context,
@@ -354,7 +346,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                       itemCount: _orders.length,
                       itemBuilder: (context, index) {
                         final order = _orders[index];
-                        return GestureDetector( // Menggunakan GestureDetector untuk menangani onTap
+                        return GestureDetector(
                           onTap: () {
                             if (order.id != null) {
                               Navigator.push(
@@ -362,7 +354,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                 MaterialPageRoute(
                                   builder: (context) => OrderDetailScreen(orderId: order.id!),
                                 ),
-                              ).then((_) => _fetchOrders()); // Refresh daftar setelah kembali dari detail
+                              ).then((_) => _fetchOrders());
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(content: Text('Order ID not available for details.'), backgroundColor: Colors.red),
@@ -440,7 +432,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                   ),
                                   const SizedBox(height: 8),
                                   const Text(
-                                    'Estimated Cost: \$XX.XX', // Placeholder for cost
+                                    'Estimated Cost: \$XX.XX',
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
@@ -451,6 +443,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
+                                      // Tombol "Mark as Proses"
                                       if (order.status.toLowerCase() == 'baru')
                                         ElevatedButton(
                                           onPressed: () =>
@@ -465,6 +458,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                           child: const Text('Mark as "Proses"'),
                                         ),
                                       const SizedBox(width: 8),
+                                      // Tombol "Mark as Selesai"
                                       if (order.status.toLowerCase() == 'proses')
                                         ElevatedButton(
                                           onPressed: () => _updateOrderStatus(
@@ -481,6 +475,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                           child: const Text('Mark as "Selesai"'),
                                         ),
                                       const SizedBox(width: 8),
+                                      // Tombol Hapus
                                       IconButton(
                                         icon: const Icon(Icons.delete, color: Colors.red),
                                         onPressed: () => _deleteOrder(order.id!),

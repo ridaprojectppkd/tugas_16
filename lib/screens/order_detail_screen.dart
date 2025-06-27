@@ -104,7 +104,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       if (!mounted) return;
       String errorMessage = e.toString().replaceFirst('Exception: ', '');
       scaffoldMessenger.showSnackBar(
-        SnackBar(content: Text("Logout failed: $errorMessage"), backgroundColor: Colors.red),
+        SnackBar(content: Text("Logout failed: $errorMessage"),
+          backgroundColor: Colors.red,
+        ),
       );
     } finally {
       if (!mounted) return;
@@ -173,7 +175,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Lottie.asset(
-                            'assets/lottie/empty_box.json', // Pastikan file Lottie ini ada
+                            'assets/lottie/empty_box.json',
                             height: 150,
                             repeat: false,
                           ),
@@ -217,7 +219,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                               Text(
-                                '\$XX.XX', // Placeholder untuk biaya, Anda bisa mengintegrasikan logika perhitungan di sini
+                                '\$XX.XX',
                                 style: TextStyle(
                                   fontSize: 22,
                                   fontWeight: FontWeight.bold,
@@ -225,7 +227,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                 ),
                               ),
                               const SizedBox(height: 20),
-                              // Tombol Aksi (misalnya, batalkan pesanan jika status masih 'Baru')
                               if (_orderDetail!.status.toLowerCase() == 'baru' || _orderDetail!.status.toLowerCase() == 'proses')
                                 SizedBox(
                                   width: double.infinity,
@@ -248,7 +249,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     );
   }
 
-  // Widget helper untuk menampilkan baris detail
   Widget _buildDetailRow(String label, String value, IconData icon, {Color? color}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -285,7 +285,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     );
   }
 
-  // Dialog konfirmasi untuk membatalkan pesanan
   Future<void> _showCancelOrderDialog(int orderId) async {
     bool? confirm = await showDialog<bool>(
       context: context,
@@ -316,7 +315,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   // Fungsi untuk update status pesanan (digunakan untuk pembatalan)
   Future<void> _updateOrderStatus(int orderId, String newStatus) async {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
-    setState(() { _isLoading = true; }); // Tampilkan loading
+    setState(() { _isLoading = true; });
 
     try {
       final SingleOrderResponse response = await _apiService.updateOrderStatus(orderId, newStatus);
@@ -324,7 +323,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       scaffoldMessenger.showSnackBar(
         SnackBar(content: Text(response.message), backgroundColor: Colors.green),
       );
-      // Refresh detail setelah update
       await _fetchOrderDetail();
     } catch (e) {
       if (!mounted) return;
