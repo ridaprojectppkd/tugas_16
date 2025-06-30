@@ -16,17 +16,33 @@ class LoginScreenLaundry extends StatefulWidget {
   State<LoginScreenLaundry> createState() => _LoginPageApiState();
 }
 
-class _LoginPageApiState extends State<LoginScreenLaundry> {
+class _LoginPageApiState extends State<LoginScreenLaundry>
+    with TickerProviderStateMixin {
   bool _isVisibility = false;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+  late AnimationController _loadingcontroller;
 
   // Initialize the ApiService and LocalStorageService
   final ApiService _apiService = ApiService();
   final LocalStorageService _localStorageService = LocalStorageService();
 
+//////////////////
+/// @override
+  void initState() {
+    super.initState();
+    // Initialize the animation controller
+    _loadingcontroller = AnimationController(vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _loadingcontroller.dispose(); // Dispose the controller when not needed
+    super.dispose();
+  }
+  ///////////////////////
   void _login() async {
     // Validate the form before proceeding
     if (!_formKey.currentState!.validate()) {
@@ -149,7 +165,8 @@ class _LoginPageApiState extends State<LoginScreenLaundry> {
                   Column(
                     children: [
                       Image.asset(
-                        AppImage.logolaundrywhite, // Your laundry app logo
+                        AppImage.logolaundrypolos,
+                        // Your laundry app logo
                         height: 100,
                       ),
                       const SizedBox(height: 16),
@@ -321,8 +338,20 @@ class _LoginPageApiState extends State<LoginScreenLaundry> {
                               ),
                               child:
                                   _isLoading
-                                      ? const CircularProgressIndicator(
-                                        color: Colors.white,
+                                      ? SizedBox(
+                                        width:
+                                            24, // Match your CircularProgressIndicator size
+                                        height: 24,
+                                        child: Lottie.asset(
+                                          'assets/lottie/loading.json', // Your loading animation
+                                          fit: BoxFit.contain,
+                                          controller: _loadingcontroller,
+                                          onLoaded: (composition) {
+                                            _loadingcontroller
+                                              ..duration = composition.duration
+                                              ..repeat();
+                                          },
+                                        ),
                                       )
                                       : const Text(
                                         'LOGIN',

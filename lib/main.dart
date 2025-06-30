@@ -7,6 +7,7 @@ import 'package:tugas_16/screens/create_order_screen.dart';
 import 'package:tugas_16/screens/home_screen.dart';
 import 'package:tugas_16/screens/login_screen.dart';
 import 'package:tugas_16/screens/register_screen.dart';
+import 'package:tugas_16/screens/splashlottie.dart';
 import 'package:tugas_16/services/api_service.dart';
 import 'package:tugas_16/services/local_storage_service.dart'; // Your profile page
 
@@ -51,8 +52,9 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       // Use the determined initial route
-      initialRoute: initialRoute,
+      initialRoute: Splashlottie.id,
       routes: {
+        Splashlottie.id: (context) => const Splashlottie(),
         LoginScreenLaundry.id: (context) => const LoginScreenLaundry(),
         RegisterScreenLaundry.id: (context) => const RegisterScreenLaundry(),
         HomeScreen.id: (context) => const HomeScreen(),
