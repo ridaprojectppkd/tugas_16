@@ -197,7 +197,17 @@ class _CreateOrderScreenState extends State<CreateOrderScreen>
       ),
       body:
           _isLoadingServiceTypes
-              ? const Center(child: CircularProgressIndicator())
+              ? Center(
+                child: SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: Lottie.asset(
+                    'assets/lottie/loading.json',
+                    repeat: true,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              )
               : _serviceTypesErrorMessage != null
               ? Center(
                 child: Padding(

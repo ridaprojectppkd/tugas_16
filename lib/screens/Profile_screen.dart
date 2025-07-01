@@ -206,7 +206,17 @@ class _ProfilePageState extends State<ProfilePage> {
 
       body:
           _isLoading
-              ? const Center(child: CircularProgressIndicator())
+              ? Center(
+                child: SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: Lottie.asset(
+                    'assets/lottie/loading.json',
+                    repeat: true,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              )
               : _errorMessage != null
               ? Center(
                 child: Padding(

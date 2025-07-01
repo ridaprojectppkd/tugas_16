@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 // Import your custom AppImage for local assets (ensure path is correct)
 
 // Import your generated services and models
@@ -307,8 +308,16 @@ class _RegisterPageApiState extends State<RegisterScreenLaundry> {
                               ),
                               child:
                                   _isLoading
-                                      ? CircularProgressIndicator(
-                                        color: Colors.white,
+                                      ? Center(
+                                        child: SizedBox(
+                                          width: 100,
+                                          height: 100,
+                                          child: Lottie.asset(
+                                            'assets/lottie/loading.json',
+                                            repeat: true,
+                                            fit: BoxFit.contain,
+                                          ),
+                                        ),
                                       )
                                       : Text(
                                         'CREATE ACCOUNT',
