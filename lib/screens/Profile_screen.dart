@@ -257,8 +257,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Lottie.asset(
-                        'assets/lottie/blobs.json',
-                        height: 200,
+                        'assets/lottie/profile.json',
+                        height: 300,
                         repeat: true,
                       ),
                       const SizedBox(height: 24),
@@ -340,7 +340,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       const SizedBox(height: 30),
                       ElevatedButton.icon(
                         onPressed: _handleLogout,
-                        icon: const Icon(Icons.logout),
+                        icon: const Icon(
+                          Icons.logout,
+                          color: Color.fromARGB(255, 255, 255, 255),
+                        ),
                         label: const Text('Logout'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red,

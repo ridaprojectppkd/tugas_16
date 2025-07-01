@@ -533,7 +533,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                   ),
                                 const SizedBox(width: 8),
 
-                                // Tombol "Mark as Selesai"
+                                // Tombol "Selesai"
                                 if (order.status.toLowerCase() == 'proses')
                                   ElevatedButton(
                                     onPressed:

@@ -760,6 +760,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               color: Color(0xFF0D47A1),
                             ),
                           ),
+
                           TextButton(
                             onPressed: _addServiceType,
                             child: const Text(
@@ -1000,7 +1001,16 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         ////////////////floating action button
         backgroundColor: const Color.fromARGB(255, 4, 41, 97),
-        child: const Icon(Icons.add, color: Colors.white),
+
+        // child: const Icon(Icons.add, color: Colors.white),
+        child: Lottie.asset(
+          'assets/lottie/add.json',
+          width: 50, // Sesuaikan ukuran
+          height: 50,
+          fit: BoxFit.contain,
+
+          repeat: true,
+        ),
       ),
     );
   }
