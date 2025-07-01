@@ -39,7 +39,10 @@ class _CreateOrderScreenState extends State<CreateOrderScreen>
   @override
   void initState() {
     super.initState();
-    _loadingController = AnimationController(vsync: this);
+    _loadingController = AnimationController(
+      duration: const Duration(milliseconds: 15000),
+      vsync: this,
+    )..repeat();
     // Jika initialLayanan diberikan, set ke controller
     if (widget.initialLayanan != null) {
       _layananController.text = widget.initialLayanan!;

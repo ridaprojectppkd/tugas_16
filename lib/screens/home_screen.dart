@@ -874,9 +874,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Column(
                         children: [
                           Lottie.asset(
-                            'assets/lottie/blobs.json',
-                            height: 100,
-                            repeat: false,
+                            'assets/lottie/order.json',
+                            height: 200,
+
+                            repeat: true,
                           ),
                           const Text(
                             'See your ongoing orders by clicking "View All Orders"',
@@ -1060,9 +1061,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const Expanded(
-                    child: Text(
-                      'Cost: \$XX.XX',
-                      style: TextStyle(fontSize: 14, color: Colors.grey),
+                    child: Center(
+                      child: Text(
+                        'Cost: \$XX.XX',
+                        style: TextStyle(fontSize: 14, color: Colors.grey),
+                      ),
                     ),
                   ),
                 ],
