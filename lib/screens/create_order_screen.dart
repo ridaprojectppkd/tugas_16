@@ -248,11 +248,11 @@ class _CreateOrderScreenState extends State<CreateOrderScreen>
                 child: Form(
                   key: _formKey,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Lottie.asset(
-                        'assets/lottie/blobs.json', // Add a suitable Lottie animation
-                        height: 150,
+                        'assets/lottie/createorder.json', // Add a suitable Lottie animation
+                        height: 300,
                         repeat: true,
                       ),
                       const SizedBox(height: 24),
