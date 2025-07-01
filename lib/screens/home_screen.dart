@@ -474,10 +474,10 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage("assets/images/download.jpg"),
+                  image: AssetImage("assets/images/blue.jpg"),
                   fit: BoxFit.cover,
                   colorFilter: ColorFilter.mode(
-                    Colors.black54,
+                    Color.fromARGB(55, 0, 0, 0),
                     BlendMode.darken,
                   ),
                 ),
@@ -548,8 +548,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            Color.fromARGB(255, 0, 95, 204),
-                            Color(0xFF0D47A1),
+                            Color.fromARGB(255, 2, 0, 129),
+                            Color.fromARGB(244, 4, 205, 219),
                           ],
                         ),
                         borderRadius: BorderRadius.only(
@@ -967,7 +967,8 @@ class _HomeScreenState extends State<HomeScreen> {
             }
           }
         },
-        backgroundColor: const Color(0xFF0D47A1),
+        ////////////////floating action button
+        backgroundColor: const Color.fromARGB(255, 4, 41, 97),
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );

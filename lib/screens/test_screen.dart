@@ -18,12 +18,12 @@ class LoginScreenLaundry extends StatefulWidget {
 
 class _LoginPageApiState extends State<LoginScreenLaundry>
     with TickerProviderStateMixin {
-  // bool _isVisibility = false;
+  bool _isVisibility = false;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
-  bool _obscurePassword = true;
+  
   late AnimationController _loadingcontroller;
 
   // Initialize the ApiService and LocalStorageService
@@ -133,44 +133,37 @@ class _LoginPageApiState extends State<LoginScreenLaundry>
               padding: const EdgeInsets.all(24.0),
               child: Column(
                 children: [
-                  SizedBox(height: 70),
-                  // App Logo
+                  // App Logo and Title
                   Image.asset(
                     AppImage.logolaundrypolos,
-                    width: 200, // Add your logo
-                    height: 300,
+                    // Your laundry app logo
+                    height: 400,
+                    width: 300,
                   ),
-                  // Welcome Text
-                  Text(
-                    'Sign In',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                  // const SizedBox(height: 15),
+                  Transform.translate(
+                    offset: Offset(0, -100), // geser teks naik 40px
+                    child: const Text(
+                      'LOGIN',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF0D47A1),
+                      ),
                     ),
                   ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Login to enjoy our premium services',
-                    style: TextStyle(fontSize: 14, color: Colors.white70),
-                  ),
-                  SizedBox(height: 40),
-                  // Registration Form
+                  const SizedBox(height: 12),
+                  // Login Card
                   Container(
-                    padding: EdgeInsets.all(24),
+                    padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: const Color.fromARGB(
-                        0,
-                        255,
-                        255,
-                        255,
-                      ).withOpacity(0.9),
+                      color: const Color.fromARGB(144, 255, 255, 255),
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black26,
+                          color: Colors.blue.withOpacity(0.1),
                           blurRadius: 10,
-                          offset: Offset(0, 4),
+                          spreadRadius: 2,
                         ),
                       ],
                     ),
@@ -178,18 +171,44 @@ class _LoginPageApiState extends State<LoginScreenLaundry>
                       key: _formKey,
                       child: Column(
                         children: [
+                          const Text(
+                            'Welcome Back',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF0D47A1),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'Sign in to continue',
+                            style: TextStyle(fontSize: 14, color: Colors.grey),
+                          ),
+                          const SizedBox(height: 24),
+
                           // Email Field
                           TextFormField(
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
                             decoration: InputDecoration(
-                              labelText: 'Email Address',
-                              prefixIcon: Icon(Icons.email_outlined),
+                              labelText: 'Email',
+                              prefixIcon: const Icon(
+                                Icons.email_outlined,
+                                color: Colors.blue,
+                              ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
+                                borderSide: const BorderSide(
+                                  color: Colors.blue,
+                                ),
                               ),
-                              filled: true,
-                              fillColor: Colors.grey[50],
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: const BorderSide(
+                                  color: Colors.blue,
+                                  width: 2,
+                                ),
+                              ),
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -201,55 +220,76 @@ class _LoginPageApiState extends State<LoginScreenLaundry>
                               return null;
                             },
                           ),
-                          SizedBox(height: 16),
+
+                          const SizedBox(height: 16),
+
                           // Password Field
                           TextFormField(
                             controller: _passwordController,
-                            obscureText: _obscurePassword,
+                            obscureText: !_isVisibility,
                             decoration: InputDecoration(
                               labelText: 'Password',
-                              prefixIcon: Icon(Icons.lock_outline),
+                              prefixIcon: const Icon(
+                                Icons.lock_outline,
+                                color: Colors.blue,
+                              ),
                               suffixIcon: IconButton(
                                 icon: Icon(
-                                  _obscurePassword
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
+                                  _isVisibility
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                  color: Colors.blue,
                                 ),
                                 onPressed: () {
-                                  setState(() {
-                                    _obscurePassword = !_obscurePassword;
-                                  });
+                                  setState(
+                                    () => _isVisibility = !_isVisibility,
+                                  );
                                 },
                               ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
+                                borderSide: const BorderSide(
+                                  color: Colors.blue,
+                                ),
                               ),
-                              filled: true,
-                              fillColor: Colors.grey[50],
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: const BorderSide(
+                                  color: Colors.blue,
+                                  width: 2,
+                                ),
+                              ),
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter a password';
+                                return 'Please enter your password';
                               }
-                              // Based on your API's error message, it expects 8+ chars and mixed case/symbols
-                              if (value.length < 8) {
-                                return 'Password must be at least 8 characters.';
-                              }
-                              if (!value.contains(RegExp(r'[A-Z]'))) {
-                                return 'Password must contain an uppercase letter.';
-                              }
-                              if (!value.contains(RegExp(r'[a-z]'))) {
-                                return 'Password must contain a lowercase letter.';
-                              }
-                              if (!value.contains(
-                                RegExp(r'[0-9!@#$%^&*(),.?":{}|<>]'),
-                              )) {
-                                return 'Password must contain a number or symbol.';
+                              if (value.length < 6) {
+                                // Minimum length as per your API example's password requirements (though API expects 8+ with special chars)
+                                return 'Password must be at least 6 characters';
                               }
                               return null;
                             },
                           ),
-                          SizedBox(height: 16),
+
+                          const SizedBox(height: 8),
+
+                          // Forgot Password
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton(
+                              onPressed: () {
+                                // Navigate to forgot password screen
+                                // You can implement navigation to a ForgotPasswordScreen here
+                              },
+                              child: const Text(
+                                'Forgot Password?',
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 24),
 
                           // Login Button
                           SizedBox(
@@ -293,42 +333,112 @@ class _LoginPageApiState extends State<LoginScreenLaundry>
                                       ),
                             ),
                           ),
-                          SizedBox(height: 16),
-                          // Login Link
+
+                          const SizedBox(height: 24),
+
+                          // Divider
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                "Don't have an account?",
-                                style: TextStyle(
-                                  color: Colors.black54,
-                                ), // Adjust color for visibility on white card
+                              Expanded(
+                                child: Divider(
+                                  color: Colors.grey[300],
+                                  thickness: 1,
+                                ),
                               ),
-                              TextButton(
-                                onPressed: () {
-                                  // Navigate back to the login screen
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder:
-                                          (context) =>
-                                              RegisterScreenLaundry(), // Ensure this path is correct
-                                    ),
-                                  );
-                                },
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                ),
                                 child: Text(
-                                  'Sign Up',
-                                  style: TextStyle(
-                                    color: Colors.blue[800],
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  'OR',
+                                  style: TextStyle(color: Colors.grey[600]),
+                                ),
+                              ),
+                              Expanded(
+                                child: Divider(
+                                  color: Colors.grey[300],
+                                  thickness: 1,
                                 ),
                               ),
                             ],
                           ),
+
+                          const SizedBox(height: 16),
+
+                          // Social Login (Placeholder)
+                          SizedBox(
+                            height: 50,
+                            child: OutlinedButton(
+                              onPressed: () {
+                                // Handle Google sign in
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      "Google login not implemented yet!",
+                                    ),
+                                  ),
+                                );
+                              },
+                              style: OutlinedButton.styleFrom(
+                                side: const BorderSide(color: Colors.blue),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    'assets/images/google.png', // Add your Google icon asset
+                                    height: 24,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  const Text(
+                                    'Continue with Google',
+                                    style: TextStyle(color: Colors.blue),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // Sign Up Link
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Don't have an account?",
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 255, 255, 255),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          // Navigate to your RegisterScreen
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) =>
+                                      const RegisterScreenLaundry(), // Ensure this path is correct
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          'Sign Up',
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 255, 255, 255),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
