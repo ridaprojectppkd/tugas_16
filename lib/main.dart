@@ -1,27 +1,30 @@
 import 'package:flutter/material.dart';
 
-// Import your login and registration screens
-// Ensure these paths are correct for your project structure
-import 'package:tugas_16/screens/Profile_screen.dart';
+// Import screens Anda
+// Pastikan path ini benar untuk struktur proyek Anda
+import 'package:tugas_16/screens/profile_screen.dart'; // Menggunakan profile_screen.dart dan ProfileScreen
 import 'package:tugas_16/screens/create_order_screen.dart';
 import 'package:tugas_16/screens/home_screen.dart';
-import 'package:tugas_16/screens/login_screen.dart';
-import 'package:tugas_16/screens/register_screen.dart';
+import 'package:tugas_16/screens/login_screen.dart'; // Menggunakan login_screen.dart dan LoginScreen
+import 'package:tugas_16/screens/register_screen.dart'; // Asumsi RegisterScreen
 import 'package:tugas_16/screens/splashlottie.dart';
+import 'package:tugas_16/screens/order_list_screen.dart'; // Menambahkan import OrderListScreen
+import 'package:tugas_16/screens/order_detail_screen.dart'; // Menambahkan import OrderDetailScreen
+
 import 'package:tugas_16/services/api_service.dart';
-import 'package:tugas_16/services/local_storage_service.dart'; // Your profile page
+import 'package:tugas_16/services/local_storage_service.dart';
 
 Future<void> main() async {
-  // Ensure Flutter widgets are initialized before accessing plugins like SharedPreferences
+  // Pastikan Flutter widgets diinisialisasi sebelum mengakses plugin seperti SharedPreferences
   WidgetsFlutterBinding.ensureInitialized();
 
   final LocalStorageService localStorageService = LocalStorageService();
   final ApiService apiService = ApiService();
 
-  // Check if a token exists when the app starts
+  // Cek apakah token ada saat aplikasi dimulai
   final String? authToken = await localStorageService.getAuthToken();
 
-  // Set the token in ApiService if it exists
+  // Set token di ApiService jika ada
   if (authToken != null) {
     apiService.setAuthToken(authToken);
     print(
@@ -31,17 +34,13 @@ Future<void> main() async {
     print('App starting without existing token.'); // Debug print
   }
 
-  // Determine the initial route based on token presence
-  String initialRoute =
-      authToken != null ? HomeScreen.id : LoginScreenLaundry.id;
-
-  runApp(MyApp(initialRoute: initialRoute));
+  // initialRoute akan selalu Splashlottie.id, karena Splashlottie yang akan menangani navigasi
+  // berdasarkan status login setelah animasinya selesai.
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final String initialRoute;
-
-  const MyApp({super.key, required this.initialRoute});
+  const MyApp({super.key}); // initialRoute tidak lagi diperlukan di sini
 
   @override
   Widget build(BuildContext context) {
@@ -52,16 +51,27 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      // Use the determined initial route
+      // Selalu mulai dengan Splashlottie
       initialRoute: Splashlottie.id,
       routes: {
         Splashlottie.id: (context) => const Splashlottie(),
-        LoginScreenLaundry.id: (context) => const LoginScreenLaundry(),
-        RegisterScreenLaundry.id: (context) => const RegisterScreenLaundry(),
+        LoginScreenLaundry.id:
+            (context) =>
+                const LoginScreenLaundry(), // Menggunakan LoginScreen.id
+        RegisterScreenLaundry.id:
+            (context) =>
+                const RegisterScreenLaundry(), // Asumsi RegisterScreen.id
         HomeScreen.id: (context) => const HomeScreen(),
-        '/profile': (context) => const ProfilePage(),
-        CreateOrderScreen.id:
-            (context) => const CreateOrderScreen(), // ADD THIS LINE
+        '/profile':
+            (context) => const ProfilePage(), // Menggunakan ProfileScreen.id
+        CreateOrderScreen.id: (context) => const CreateOrderScreen(),
+        OrderListScreen.id:
+            (context) =>
+                const OrderListScreen(), // Menambahkan rute OrderListScreen
+        OrderDetailScreen.id:
+            (context) => const OrderDetailScreen(
+              orderId: 0,
+            ), // Menambahkan rute OrderDetailScreen
       },
     );
   }

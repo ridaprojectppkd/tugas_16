@@ -6,7 +6,6 @@ import 'package:tugas_16/screens/login_screen.dart';
 import 'package:tugas_16/services/api_service.dart';
 import 'package:tugas_16/services/local_storage_service.dart';
 
-
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
@@ -112,13 +111,15 @@ class _ProfilePageState extends State<ProfilePage> {
 
         //////////tambahan navigator/////////////////
         if (!mounted) return;
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginScreenLaundry()), // Navigate to LoginScreen
-        (Route<dynamic> route) => false, // Remove all previous routes
-      );
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const LoginScreenLaundry(),
+          ), // Navigate to LoginScreen
+          (Route<dynamic> route) => false, // Remove all previous routes
+        );
 
-      ////////////////////////////
+        ////////////////////////////
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -150,7 +151,6 @@ class _ProfilePageState extends State<ProfilePage> {
       _isLoading = true;
     });
     try {
-      
       await _localStorageService.clearAuthToken();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -203,91 +203,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
         ],
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            // User Account Drawer Header
-            _userProfile == null
-                ? UserAccountsDrawerHeader(
-                  accountName:
-                      _isLoading
-                          ? const CircularProgressIndicator(color: Colors.white)
-                          : Text(_errorMessage ?? 'Loading Profile...'),
-                  accountEmail: const Text(''),
-                  currentAccountPicture: const CircleAvatar(
-                    backgroundColor: Colors.white,
-                    child: Icon(
-                      Icons.person,
-                      size: 40,
-                      color: Color(0xFF0D47A1),
-                    ),
-                  ),
-                  decoration: const BoxDecoration(
-                    color: Color.fromARGB(255, 117, 172, 255), // Dark blue
-                  ),
-                )
-                : UserAccountsDrawerHeader(
-                  accountName: Text(_userProfile!.name),
-                  accountEmail: Text(_userProfile!.email),
-                  currentAccountPicture: CircleAvatar(
-                    backgroundColor: Colors.white,
-                    child: Text(
-                      _userProfile!.name.isNotEmpty
-                          ? _userProfile!.name.substring(0, 1).toUpperCase()
-                          : '',
-                      style: const TextStyle(
-                        fontSize: 40.0,
-                        color: Color.fromARGB(255, 0, 0, 0),
-                      ),
-                    ),
-                  ),
-                  decoration: const BoxDecoration(
-                    color: Color(0xFF0D47A1), // Dark blue
-                  ),
-                ),
-            // Drawer List Tiles
-            ListTile(
-              leading: const Icon(Icons.person),
-              title: const Text('Profile'),
-              onTap: () {
-                Navigator.pop(context); // Close the drawer
-                _fetchUserProfile(); // Refresh profile data
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text('Settings'),
-              onTap: () {
-                Navigator.pop(context); // Close the drawer
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Settings page not implemented'),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.person),
-              title: const Text('Profile'),
-              onTap: () {
-                Navigator.pop(context); // Close the drawer
-                Navigator.push(
-                  // Navigate to HomeScreen (or ProfileScreen)
-                  context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()),
-                );
-              },
-            ),
-            const Divider(), // Divider before logout
-            ListTile(
-              leading: const Icon(Icons.logout, color: Colors.red),
-              title: const Text('Logout', style: TextStyle(color: Colors.red)),
-              onTap: _handleLogout,
-            ),
-          ],
-        ),
-      ),
+
       body:
           _isLoading
               ? const Center(child: CircularProgressIndicator())

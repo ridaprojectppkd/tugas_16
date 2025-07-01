@@ -445,7 +445,17 @@ class _HomeScreenState extends State<HomeScreen> {
             UserAccountsDrawerHeader(
               accountName:
                   _isLoadingProfile
-                      ? const CircularProgressIndicator(color: Colors.white)
+                      ? Center(
+                        child: SizedBox(
+                          width: 100,
+                          height: 100,
+                          child: Lottie.asset(
+                            'assets/lottie/loading.json',
+                            repeat: true,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      )
                       : Text(
                         _userProfile?.name ??
                             (_profileErrorMessage ?? 'Loading Profile...'),
@@ -505,7 +515,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () {
                 if (mounted) {
                   Navigator.pop(context);
-                  _fetchServiceTypes();
+                  // _fetchServiceTypes();
                 }
               },
             ),
@@ -535,7 +545,17 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body:
           _isLoadingProfile || _isLoadingServices
-              ? const Center(child: CircularProgressIndicator())
+              ? Center(
+                child: SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: Lottie.asset(
+                    'assets/lottie/loading.json',
+                    repeat: true,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              )
               : SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -756,7 +776,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 16),
 
                     _isLoadingServices
-                        ? const Center(child: CircularProgressIndicator())
+                        ? Center(
+                          child: SizedBox(
+                            width: 100,
+                            height: 100,
+                            child: Lottie.asset(
+                              'assets/lottie/loading.json',
+                              repeat: true,
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        )
                         : _servicesErrorMessage != null
                         ? Center(
                           child: Padding(
