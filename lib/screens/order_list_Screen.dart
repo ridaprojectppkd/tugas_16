@@ -553,7 +553,8 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                 const SizedBox(width: 8),
 
                                 // Tombol Hapus hanya muncul jika status BUKAN 'selesai'
-                                if (order.status.toLowerCase() != 'selesai')
+                                if (order.status.toLowerCase() != 'selesai' &&
+                                    order.status.toLowerCase() != 'dibatalkan')
                                   IconButton(
                                     icon: const Icon(
                                       Icons.delete,
