@@ -532,6 +532,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                     child: const Text('Mark as "Proses"'),
                                   ),
                                 const SizedBox(width: 8),
+
                                 // Tombol "Mark as Selesai"
                                 if (order.status.toLowerCase() == 'proses')
                                   ElevatedButton(
@@ -550,14 +551,16 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                     child: const Text('Mark as "Selesai"'),
                                   ),
                                 const SizedBox(width: 8),
-                                // Tombol Hapus
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.delete,
-                                    color: Colors.red,
+
+                                // Tombol Hapus hanya muncul jika status BUKAN 'selesai'
+                                if (order.status.toLowerCase() != 'selesai')
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.delete,
+                                      color: Colors.red,
+                                    ),
+                                    onPressed: () => _deleteOrder(order.id!),
                                   ),
-                                  onPressed: () => _deleteOrder(order.id!),
-                                ),
                               ],
                             ),
                           ],
