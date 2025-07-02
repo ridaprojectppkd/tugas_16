@@ -7,6 +7,7 @@ import 'package:tugas_16/constatnt/app_style.dart';
 
 // PERBAIKAN KRITIS: Hanya import satu file ini untuk semua model
 import 'package:tugas_16/models/api_model.dart';
+import 'package:tugas_16/screens/order_list_Screen.dart';
 import 'package:tugas_16/services/api_service.dart';
 import 'package:tugas_16/services/local_storage_service.dart';
 
@@ -14,7 +15,6 @@ import 'package:tugas_16/services/local_storage_service.dart';
 import 'package:tugas_16/screens/profile_screen.dart';
 import 'package:tugas_16/screens/login_screen.dart';
 import 'package:tugas_16/screens/create_order_screen.dart';
-import 'package:tugas_16/screens/order_list_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -902,21 +902,96 @@ class _HomeScreenState extends State<HomeScreen> {
             context: context,
             builder: (BuildContext dialogContext) {
               return AlertDialog(
-                title: const Text('Choose Service Detail'),
+                backgroundColor: AppColor.primaryBlue,
+                title: Center(
+                  child: const Text(
+                    'Choose Service Detail',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    ListTile(
-                      title: const Text('Antar'),
+                    // Antar Option
+                    InkWell(
                       onTap: () {
                         Navigator.of(dialogContext).pop('Antar');
                       },
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            height: 150,
+                            width: 150,
+                            child: Lottie.asset(
+                              'assets/lottie/delivery.json', // Replace with your Lottie file
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: AppColor.blueButton,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 6,
+                            ),
+                            child: const Text(
+                              'Antar',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    ListTile(
-                      title: const Text('Jemput'),
+
+                    // Jemput Option
+                    InkWell(
                       onTap: () {
                         Navigator.of(dialogContext).pop('Jemput');
                       },
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            height: 150,
+                            width: 150,
+                            child: Lottie.asset(
+                              'assets/lottie/cash.json', // Replace with your Lottie file
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: AppColor.blueButton,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 6,
+                            ),
+                            child: const Text(
+                              'Jemput',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),

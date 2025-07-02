@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:tugas_16/models/api_model.dart';
-
 // Import semua model dari satu file flutter_models.dart
 import 'package:tugas_16/services/api_service.dart';
 import 'package:tugas_16/services/local_storage_service.dart';
-
 // Import layar lain yang akan dinavigasi dari sini
 import 'package:tugas_16/screens/create_order_screen.dart';
 import 'package:tugas_16/screens/login_screen.dart';
@@ -581,20 +579,71 @@ class _OrderListScreenState extends State<OrderListScreen> {
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    ListTile(
-                      title: const Text('Antar'),
+                    // Antar Option
+                    InkWell(
                       onTap: () {
                         Navigator.of(dialogContext).pop('Antar');
                       },
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            height: 100,
+                            width: 100,
+                            child: Lottie.asset(
+                              'assets/lottie/laundrylottie.json', // Replace with your Lottie file
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'Antar',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    ListTile(
-                      title: const Text('Jemput'),
+
+                    // Jemput Option
+                    InkWell(
                       onTap: () {
                         Navigator.of(dialogContext).pop('Jemput');
                       },
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            height: 100,
+                            width: 100,
+                            child: Lottie.asset(
+                              'assets/lottie/order.json', // Replace with your Lottie file
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'Jemput',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(dialogContext).pop();
+                    },
+                    child: const Text('Cancel'),
+                  ),
+                ],
               );
             },
           );
