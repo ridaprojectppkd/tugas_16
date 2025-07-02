@@ -1,7 +1,9 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:tugas_16/constatnt/app_color.dart';
 import 'package:tugas_16/constatnt/app_image.dart';
+import 'package:tugas_16/constatnt/app_style.dart';
 
 // PERBAIKAN KRITIS: Hanya import satu file ini untuk semua model
 import 'package:tugas_16/models/api_model.dart';
@@ -495,8 +497,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.person),
-              title: const Text('My Profile'),
+              leading: const Icon(Icons.person, color: AppColor.facebookBlue),
+              title: const Text('My Profile', style: AppStyle.StyleSatu),
               onTap: () {
                 if (mounted) {
                   Navigator.pop(context);
@@ -510,8 +512,8 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.wash),
-              title: const Text('Services'),
+              leading: const Icon(Icons.wash, color: AppColor.facebookBlue),
+              title: const Text('Services', style: AppStyle.StyleSatu),
               onTap: () {
                 if (mounted) {
                   Navigator.pop(context);
@@ -520,8 +522,11 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.receipt_long),
-              title: const Text('My Orders'),
+              leading: const Icon(
+                Icons.receipt_long,
+                color: AppColor.facebookBlue,
+              ),
+              title: const Text('My Orders', style: AppStyle.StyleSatu),
               onTap: () {
                 if (mounted) {
                   Navigator.pop(context);

@@ -116,7 +116,7 @@ class _RegisterPageApiState extends State<RegisterScreenLaundry> {
                   SizedBox(height: 70),
                   // App Logo
                   Image.asset(
-                    AppImage.logolaundrywhite,
+                    AppImage.logolaundrypolos,
                     width: 200, // Add your logo
                     height: 180,
                   ),
