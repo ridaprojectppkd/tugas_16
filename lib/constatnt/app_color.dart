@@ -14,6 +14,7 @@ class AppColor {
    static const Color birubase = Color(0xffB6FFFA);
    static const Color ungubase = Color(0xff687EFF);
   static const Color orange2 = Color(0xffffb9e3a);
+  static const Color bluebase = Color(0xffA8F1FF);
 
   // API Auth
   static const Color primaryBlack = Color(
