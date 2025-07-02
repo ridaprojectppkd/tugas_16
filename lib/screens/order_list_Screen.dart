@@ -276,7 +276,6 @@ class _OrderListScreenState extends State<OrderListScreen> {
       body: Column(
         // Menggunakan Column untuk menampung filter dan daftar
         children: [
-
           // Filter Section (moved from AppBar.bottom)//////segmented button untuk filter
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
@@ -388,7 +387,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Lottie.asset(
-                            'assets/lottie/empty_box.json',
+                            'assets/lottie/createorder.json',
                             height: 150,
                             repeat: false,
                           ),
@@ -421,7 +420,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                                 height: 100,
                                                 width: 100,
                                                 child: Lottie.asset(
-                                                  'assets/lottie/laundrylottie.json', // Replace with your Lottie file
+                                                  'assets/lottie/delivery.json', // Replace with your Lottie file
                                                   fit: BoxFit.contain,
                                                 ),
                                               ),
@@ -449,7 +448,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                                 height: 100,
                                                 width: 100,
                                                 child: Lottie.asset(
-                                                  'assets/lottie/order.json', // Replace with your Lottie file
+                                                  'assets/lottie/cash.json', // Replace with your Lottie file
                                                   fit: BoxFit.contain,
                                                 ),
                                               ),
