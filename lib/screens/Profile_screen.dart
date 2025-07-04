@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:tugas_16/constatnt/app_color.dart';
 import 'package:tugas_16/models/api_model.dart';
 import 'package:tugas_16/screens/login_screen.dart';
 import 'package:tugas_16/services/api_service.dart';
@@ -304,12 +305,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                               ),
                                               style: const TextStyle(
                                                 fontSize: 18,
+                                                color: AppColor.facebookBlue,
                                               ),
                                             )
                                             : Text(
                                               'Name: ${_userProfile!.name}',
                                               style: const TextStyle(
                                                 fontSize: 18,
+                                                color: AppColor.facebookBlue,
                                               ),
                                             ),
                                   ),
@@ -326,7 +329,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                   Expanded(
                                     child: Text(
                                       'Email: ${_userProfile!.email}',
-                                      style: const TextStyle(fontSize: 18),
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        color: AppColor.facebookBlue,
+                                      ),
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),

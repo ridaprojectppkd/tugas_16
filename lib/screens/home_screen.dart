@@ -176,16 +176,37 @@ class _HomeScreenState extends State<HomeScreen> {
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: const Text('Add New Service Type'),
+          backgroundColor: AppColor.primaryBlue,
+          title: const Text(
+            'Add New Service Type',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
           content: TextField(
             controller: nameController,
             decoration: const InputDecoration(
               hintText: "Service Name (e.g., Wash)",
+              hintStyle: TextStyle(color: Colors.white70),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.white54),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.white),
+              ),
             ),
+            style: const TextStyle(color: Colors.white),
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancel'),
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.red,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Colors.white),
+              ),
               onPressed: () {
                 Navigator.of(dialogContext).pop();
               },
@@ -1115,12 +1136,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildServiceCard(ServiceType service) {
     return Card(
+      color: AppColor.facebookBlue,
       elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: ConstrainedBox(
         constraints: BoxConstraints(
           minHeight: 180, // Set minimum height
-          maxHeight: 220, // Set maximum height to prevent overflow
+          maxHeight: 180, // Set maximum height to prevent overflow
         ),
         child: Stack(
           children: [
@@ -1131,10 +1153,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   SizedBox(
-                    height: 60, // Fixed height for image
+                    height: 70, // Fixed height for image
                     child: Center(
                       child: Image.asset(
-                        AppImage.logolaundryblue,
+                        AppImage.logolaundrypolos,
                         fit: BoxFit.contain, // Ensure image fits
                       ),
                     ),
@@ -1146,7 +1168,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF0D47A1),
+                      color: Color.fromARGB(255, 255, 255, 255),
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -1155,7 +1177,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Center(
                       child: Text(
                         'Cost: \$XX.XX',
-                        style: TextStyle(fontSize: 14, color: Colors.grey),
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Color.fromARGB(255, 255, 255, 255),
+                        ),
                       ),
                     ),
                   ),
