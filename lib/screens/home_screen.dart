@@ -517,7 +517,8 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () {
                 if (mounted) {
                   Navigator.pop(context);
-                  // _fetchServiceTypes();
+                  // _fetchServ
+                  // iceTypes();
                 }
               },
             ),
