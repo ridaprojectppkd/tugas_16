@@ -4,7 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
 class GoogleMapsScreen extends StatefulWidget {
-  const GoogleMapsScreen({Key? key}) : super(key: key);
+  const GoogleMapsScreen({super.key});
 
   @override
   _GoogleMapsScreenState createState() => _GoogleMapsScreenState();
@@ -82,7 +82,21 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Google Maps')),
+      appBar: AppBar(
+        title: Text('Google Maps'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.my_location),
+            onPressed: () {
+              if (_marker != null) {
+                mapController?.animateCamera(
+                  CameraUpdate.newLatLng(_currentPosition),
+                );
+              }
+            },
+          ),
+        ],
+      ),
       body: Stack(
         children: [
           GoogleMap(
@@ -108,11 +122,6 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
             ),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _getCurrentLocation,
-        child: Icon(Icons.refresh),
-        tooltip: "Refresh Location",
       ),
     );
   }

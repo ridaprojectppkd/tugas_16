@@ -94,7 +94,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
           _allOrders
               .where(
                 (order) =>
-                    order.status?.toLowerCase() ==
+                    order.status.toLowerCase() ==
                     _selectedStatusFilter!.toLowerCase(),
               )
               .toList();
@@ -672,7 +672,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       // Tombol "Mark as Proses"
-                                      if (order.status?.toLowerCase() == 'baru')
+                                      if (order.status.toLowerCase() == 'baru')
                                         ElevatedButton(
                                           onPressed:
                                               () => _updateOrderStatus(
@@ -692,7 +692,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                       const SizedBox(width: 8),
 
                                       // Tombol "Selesai"
-                                      if (order.status?.toLowerCase() ==
+                                      if (order.status.toLowerCase() ==
                                           'proses')
                                         ElevatedButton(
                                           onPressed:
@@ -715,9 +715,9 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                       const SizedBox(width: 8),
 
                                       // Tombol Hapus hanya muncul jika status BUKAN 'selesai' atau 'dibatalkan'
-                                      if (order.status?.toLowerCase() !=
+                                      if (order.status.toLowerCase() !=
                                               'selesai' &&
-                                          order.status?.toLowerCase() !=
+                                          order.status.toLowerCase() !=
                                               'dibatalkan')
                                         IconButton(
                                           icon: const Icon(

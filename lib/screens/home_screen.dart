@@ -7,6 +7,7 @@ import 'package:tugas_16/constatnt/app_style.dart';
 
 // PERBAIKAN KRITIS: Hanya import satu file ini untuk semua model
 import 'package:tugas_16/models/api_model.dart';
+import 'package:tugas_16/screens/google_maps.dart';
 import 'package:tugas_16/screens/order_list_Screen.dart';
 import 'package:tugas_16/services/api_service.dart';
 import 'package:tugas_16/services/local_storage_service.dart';
@@ -556,6 +557,24 @@ class _HomeScreenState extends State<HomeScreen> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => const OrderListScreen(),
+                    ),
+                  );
+                }
+              },
+            ),
+            ListTile(
+              leading: const Icon(
+                Icons.my_location,
+                color: AppColor.facebookBlue,
+              ),
+              title: const Text('My Location', style: AppStyle.StyleSatu),
+              onTap: () {
+                if (mounted) {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const GoogleMapsScreen(),
                     ),
                   );
                 }

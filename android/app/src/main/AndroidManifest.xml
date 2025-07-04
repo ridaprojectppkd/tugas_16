@@ -6,8 +6,11 @@
         android:label="tugas_16"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <meta-data
+              android:name="com.google.android.geo.API_KEY"
+              android:value="AIzaSyAE3Q3MpbAEYfbOOpmmsLSWjpBMKh-5TGc" 
+        />
         
-
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -24,10 +27,6 @@
             <meta-data
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
-              />
-            <meta-data
-              android:name="com.google.android.geo.API_KEY"
-              android:value="AIzaSyAE3Q3MpbAEYfbOOpmmsLSWjpBMKh-5TGc" 
               />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
